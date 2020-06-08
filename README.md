@@ -24,7 +24,9 @@ COMMIT:
 
 4. Go to VCS|Git|Push and specify push to your personal branch.
 
-5. Click push and create a 
+5. Click push and create a pull request if the change is completely done.
+
+6. The change will then be reviewed and merged into the master branch if no problem is found.
 
 IMPORTANT: Only commit to the branch of your name, DO NOT commit directly to the master branch unless the commit has been reviewed and agreed upon by all collaborators.
 
