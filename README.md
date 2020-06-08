@@ -12,9 +12,9 @@ SETUP:
 
 4. Complete VCS setup process.
 
-5. Open VCS menu, select "Get from Version Control" and clone from this repository.
+5. Go to VCS | Get from Version Control and clone from this repository.
 
-COMMIT:
+COMMIT & PUSH:
 1. Always create or make changes to the corrosponding documentation in Creately before actual commit.
    (Make sure to have documentation for every single class)
 
