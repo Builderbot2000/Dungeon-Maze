@@ -22,7 +22,7 @@ COMMIT:
 
 3. Go to VCS menu and select commit.
 
-4. Go to VCS|Git|Push and specify push to your personal branch.
+4. Go to VCS | Git | Push and specify push to your personal branch.
 
 5. Click push and create a pull request if the change is completely done.
 
