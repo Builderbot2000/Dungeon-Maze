@@ -2,12 +2,20 @@
 Assignment 2 in CMPT 213 of the SFU Computing Science Program.
 
 # Workflow
-NOTE: Due to the apparent lack of version control features in the IntelliJ IDE, we unfortunately cannot directly integrate local projects to   the Github repository, so commits and changes has to remain unautomated for the time being.
+
+SETUP:
+1. Open the project that you want to put under Git.
+
+Choose Enable Version Control Integration from the VCS Operations Popup Alt+` or from the main VCS menu.
+
+Choose Git as the version control system and click OK.
+
+
 
 1. Always create or make changes to the corrosponding documentation in Creately before actual commit.
    (Make sure to have documentation for every single class)
 
-2. Have a local IntelliJ project set up locally on the PC.
+2. Have a IntelliJ project set up locally on the PC.
 
 3. Download the object file you want to edit from this repository and use it to overwrite the same file in your local project. 
    (The latter can be found through right clicking said file and selecting "Find in Explorer" in IntelliJ)
