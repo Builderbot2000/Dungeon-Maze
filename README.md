@@ -4,11 +4,15 @@ Assignment 2 in CMPT 213 of the SFU Computing Science Program.
 # Workflow
 
 SETUP:
-1. Open the project that you want to put under Git.
+1. Open a new project to import from Git.
 
-Choose Enable Version Control Integration from the VCS Operations Popup Alt+` or from the main VCS menu.
+2. Choose "Enable Version Control Integration" from the VCS Operations Popup or from the main VCS menu.
 
-Choose Git as the version control system and click OK.
+3. Choose Git as the version control system and click OK.
+
+4. Complete VCS setup process.
+
+5. Open VCS menu, select "Get from Version Control" and clone from this repository.
 
 
 
