@@ -1,4 +1,4 @@
-package ca.sfu.cmpt213.assignment2.ui;
+package ca.sfu.cmpt213.assignment2;
 
 import java.util.Scanner;
 
