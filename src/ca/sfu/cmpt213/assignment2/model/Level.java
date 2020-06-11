@@ -1,6 +1,4 @@
-package ca.sfu.cmpt213.assignment2.ui;
-
-import ca.sfu.cmpt213.assignment2.model.Tile;
+package ca.sfu.cmpt213.assignment2.model;
 
 /**
  * Creates the map where in which gameplay will take place
