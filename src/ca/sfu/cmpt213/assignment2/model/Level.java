@@ -2,6 +2,8 @@ package ca.sfu.cmpt213.assignment2.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
+import java.util.Stack;
 
 /**
  * Creates the map where in which gameplay will take place
@@ -9,8 +11,15 @@ import java.util.Arrays;
 
 public class Level {
 
-    private static final int MAP_WIDTH = 15, MAP_HEIGHT = 20, CHAMBER_WIDTH = 13, CHAMBER_HEIGHT = 18;
+
+    public static final int MAP_WIDTH = 15;
+    public static final int MAP_HEIGHT = 20;
+    private static final int CHAMBER_WIDTH = 14;
+    private static final int CHAMBER_HEIGHT = 19;
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
+    private static int numberOfCellsVisited;
+    private static final Stack<Tile> mapStack = new Stack<>();
+    private Tile[][] tempMap = new Tile[CHAMBER_HEIGHT/2][CHAMBER_WIDTH/2]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
 
     /**
      * Creates the "chamber" where the 20x15 matrix's walls are created. Thus we only work with the left over 18x13 space
@@ -20,37 +29,146 @@ public class Level {
      */
     //we can actually omit the Tile.Terrain.wall or empty by just moving the enum to a seperate file....
     public Level() {
-        createChamber();
-        initializeChamber();
-    }
-
-    private void initializeChamber() {
-        //implement DFS to occupy maze
-
-
-        //in second pass check if there are more than 2 empty spaces around
-    }
-
-    private void createChamber() {
         for (int i = 0; i < MAP_HEIGHT; i++) {
-            for (int j = 0; j < MAP_WIDTH; j++) {
-                if (i == 0)
-                    map[i][j].setTerrain(Tile.Terrain.wall);
-                else if (j == 0) {
-                    map[i][j].setTerrain(Tile.Terrain.wall);
-                } else if (j == CHAMBER_WIDTH + 1 || i == CHAMBER_HEIGHT + 1) {
-                    map[i][j].setTerrain(Tile.Terrain.wall);
-                } else
-                    map[i][j].setTerrain(Tile.Terrain.empty);
+            for (int j = 0; j < MAP_WIDTH; j++)
+                map[i][j] = new Tile();
+        }
+        createChamber();
+    }
+
+    private void initializeChamber(Tile currentTile) {
+        int yIndex;
+        int xIndex;
+        /*
+        I was changing my code, I need to implement this logic //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
+        The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
+        I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
+         */
+
+        while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)/4)
+        {
+            yIndex = currentTile.getCurrentPosition().getY();
+            xIndex = currentTile.getCurrentPosition().getX();
+            map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX()].setVisited(true);
+
+            ArrayList<Integer> neighbours = new ArrayList<>();
+
+            //creating a set of unvisited neighbours
+            // North neighbour
+            if (yIndex - 1 > 1) {
+                if (!map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].getVisited()) //Northern neighbour unvisited
+                    neighbours.add(0);
+            }
+            //Southern neighbour
+            if (!(yIndex + 1 > CHAMBER_HEIGHT)) { //y index if increased is not greater than height of the chamber
+                if (!map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].getVisited()) //Northern neighbour unvisited
+                    neighbours.add(1);
+            }
+            //Eastern neighbour
+            if (!(xIndex + 1 >= CHAMBER_WIDTH)) {
+                if (!map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].getVisited()) {
+                    neighbours.add(2);
+                }
+            }
+            //Western neighbour
+            if (xIndex - 1 > 1) {
+                if (!map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].getVisited()) {
+                    neighbours.add(3);
+                }
+            }
+            if (!neighbours.isEmpty()) {
+                //generate random number between 0 and 3 for direction
+                Random rand = new Random();
+                int upperBound = 4;
+                boolean randomizer = false;
+                int myDirection;
+                do {
+                    myDirection = rand.nextInt(upperBound);
+                    randomizer = neighbours.contains(myDirection);
+                } while (!randomizer);
+                //knock down wall
+                switch (myDirection) {
+
+                    case 0:
+                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Tile.Terrain.empty);
+                        mapStack.push(map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
+                        currentTile = map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()];
+                        break;
+                    case 1:
+                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Tile.Terrain.empty);
+                        mapStack.push(map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
+                        currentTile = map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()];
+                        break;
+                    case 2:
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Tile.Terrain.empty);
+                        mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1]); //push northern neighbour
+                        currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1];
+                        break;
+                    case 3:
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Tile.Terrain.empty);
+                        mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1]); //push northern neighbour
+                        currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1];
+                        break;
+
+                }
+
+                numberOfCellsVisited++;
+
+            } else {
+                currentTile = mapStack.pop(); //backtrack
             }
 
         }
+    }
+
+
+    private void createChamber() {
+        /*
+        filling in the entire matrix with walls where in which I can break them down
+         */
+        for (int y = 0; y < MAP_HEIGHT; y++) {
+            for (int x = 0; x < MAP_WIDTH; x++) {
+                if (y == 0) { //make walls surrounding chamber visible
+                    map[y][x].setVisible(true);
+                    map[y][x].setVisited(true);
+                } else if (x == 0) { //make walls surrounding chamber visible
+                    map[y][x].setVisible(true);
+                    map[y][x].setVisited(true);
+                } else if (x == CHAMBER_WIDTH || y == CHAMBER_HEIGHT) { //make walls surrounding chamber visible
+                    map[y][x].setVisible(true);
+                    map[y][x].setVisited(true);
+                } else {
+                    map[y][x].setVisible(true);
+                    map[y][x].setVisited(false);
+
+                }
+
+
+                map[y][x].setTerrain(Tile.Terrain.wall); // fill everywhere with walls
+
+
+                map[y][x].setCurrentPosition(new Coordinate(x, y)); //get all coordinates
+
+
+            }
+        }
+
+        numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
+        map[1][1].setVisited(true);
+        mapStack.push(map[1][1]); //Chamber start position
+        initializeChamber(map[1][1]); //Chamber start position
 
     }
 
-    public Tile[][] getMap() { return this.map; }
+    public Tile[][] getMap() {
 
-    public void setMap(Tile[][] map) { this.map = map; }
+        return map;
+    }
+
+    public void setMap(Tile[][] map) {
+        this.map = map;
+    }
+
 
     public String toString(ArrayList<Entity> entityList) {
         return "";
