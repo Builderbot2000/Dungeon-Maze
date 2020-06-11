@@ -1,5 +1,6 @@
 package ca.sfu.cmpt213.assignment2.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -51,10 +52,7 @@ public class Level {
 
     public void setMap(Tile[][] map) { this.map = map; }
 
-    @Override
-    public String toString() {
-        return "Level{" +
-                "map=" + Arrays.toString(map) +
-                '}';
+    public String toString(ArrayList<Entity> entityList) {
+        return "";
     }
 }
