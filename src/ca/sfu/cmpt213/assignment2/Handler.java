@@ -72,22 +72,10 @@ public class Handler {
             String entry = scanner.nextLine();
 
             switch (entry) {
-                case "N" -> {
-                    System.out.println("Moving north...");
-                    hero.move("N");
-                }
-                case "W" -> {
-                    System.out.println("Moving west...");
-                    hero.move("W");
-                }
-                case "S" -> {
-                    System.out.println("Moving south...");
-                    hero.move("S");
-                }
-                case "E" -> {
-                    System.out.println("Moving east...");
-                    hero.move("E");
-                }
+                case "W" -> moveEntity(hero,Direction.NORTH);
+                case "A" -> moveEntity(hero,Direction.WEST);
+                case "S" -> moveEntity(hero,Direction.SOUTH);
+                case "D" -> moveEntity(hero,Direction.EAST);
                 case "H" -> helpMenu();
                 case "Q" -> {
                     System.out.println("Quitting...");
@@ -104,11 +92,43 @@ public class Handler {
 
     public void spawnEntity(Entity entity) {
         entityList.add(entity);
-        Coordinate entityPosition = entity.getPosition();
-        int x = entityPosition.getX();
-        int y = entityPosition.getY();
+        setEntity(entity,entity.getPosition());
+    }
+
+    public void setEntity(Entity entity, Coordinates newCoordinates) {
+        int x = newCoordinates.getX();
+        int y = newCoordinates.getY();
         this.level.getMap()[y][x].addInhabitant(entity);
-        this.level.getMap()[y][x].setIsInhabited(true);
+        this.level.getMap()[y][x].update();
+    }
+
+    public void moveEntity(Entity entity, Direction direction) {
+
+        // Generate new coordinates based on movement
+        int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
+        int newX = originalX, newY = originalY;
+        switch (direction) {
+            case NORTH -> newY = originalY - 1;
+            case WEST -> newX = originalX - 1;
+            case SOUTH -> newY = originalY + 1;
+            case EAST -> newX = originalX + 1;
+        }
+        System.out.println("Moving " + direction);
+
+        // New coordinates feasibility check
+        Tile originalTile = this.level.getMap()[originalY][originalX];
+        Tile targetTile = this.level.getMap()[newY][newX];
+        if (targetTile.getTerrain() != Terrain.WALL) {
+            if (targetTile.getIsInhabited()) {
+                System.out.println("Overlap!");
+            }
+            entity.setPosition(new Coordinates(newX,newY));
+            originalTile.removeInhabitant(entity);
+            originalTile.update();
+            targetTile.addInhabitant(entity);
+            targetTile.update();
+        }
+        else System.out.println("You can't pass through walls!");
     }
 
     public void enableDebugMode() {

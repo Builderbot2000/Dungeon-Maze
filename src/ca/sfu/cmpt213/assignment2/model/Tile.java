@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Tile {
 
-    private Coordinate currentPosition;
+    private Coordinates currentPosition;
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
     private ArrayList<Entity> inhabitants = new ArrayList<>(); // this doesn't need to be an arraylist?
@@ -21,11 +21,11 @@ public class Tile {
     }
 
     // Getters and Setters
-    public Coordinate getCurrentPosition() {
+    public Coordinates getCurrentPosition() {
         return currentPosition;
     }
 
-    public void setCurrentPosition(Coordinate currentPosition) {
+    public void setCurrentPosition(Coordinates currentPosition) {
         this.currentPosition = currentPosition;
     }
 
@@ -58,11 +58,16 @@ public class Tile {
 
     public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
 
+    public void update() {
+        // Automatically set isInhabited flag
+        this.isInhabited = this.inhabitants.size() != 0;
+    }
+
     public ArrayList<Entity> getInhabitants() {
         return this.inhabitants;
     }
 
-    public void addInhabitant(Entity newInhabitant) {
-        this.inhabitants.add(newInhabitant);
-    }
+    public void addInhabitant(Entity newInhabitant) { this.inhabitants.add(newInhabitant); }
+
+    public void removeInhabitant(Entity entity) { this.inhabitants.remove(entity); }
 }

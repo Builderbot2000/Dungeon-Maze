@@ -6,18 +6,8 @@ package ca.sfu.cmpt213.assignment2.model;
 public abstract class Entity {
 
     private boolean isAlive;
-    private Coordinate position;
+    private Coordinates position;
     public String symbol = "E";
-
-    public void move(String input) {
-        /*
-        switch (input) {
-            case "N" -> {
-                int expectedY = position.getY() + 1;
-            }
-        }
-        */
-    }
 
     // Getters and Setters
     public boolean isAlive() {
@@ -28,11 +18,11 @@ public abstract class Entity {
         isAlive = alive;
     }
 
-    public Coordinate getPosition() {
+    public Coordinates getPosition() {
         return position;
     }
 
-    public void setPosition(Coordinate position) {
+    public void setPosition(Coordinates position) {
         this.position = position;
     }
 }

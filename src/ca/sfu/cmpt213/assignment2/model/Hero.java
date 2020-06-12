@@ -12,7 +12,7 @@ public class Hero extends Entity {
     public Hero(int x, int y) {
         symbol = "@";
         this.setAlive(true);
-        this.setPosition(new Coordinate(x,y));
+        this.setPosition(new Coordinates(x,y));
         this.killCount = 0;
         this.powerCount = 0;
     }

@@ -3,11 +3,11 @@ package ca.sfu.cmpt213.assignment2.model;
 /**
  * Coordinate class which is used to map out coordinates in the game space
  */
-public class Coordinate {
+public class Coordinates {
 
     private int x, y;
 
-    public Coordinate(int x, int y) {
+    public Coordinates(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -26,5 +26,13 @@ public class Coordinate {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinates{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 }
