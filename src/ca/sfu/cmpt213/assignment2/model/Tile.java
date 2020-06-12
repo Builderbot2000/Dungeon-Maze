@@ -16,29 +16,48 @@ public class Tile {
       */
         empty, wall
     }
-
-    Terrain terrain;
-    Boolean isVisible;
-    ArrayList<Entity> inhabitant;
-
-    public Terrain getTerrain() {
-        return terrain;
+    private Coordinate currentPosition = new Coordinate();
+    private Terrain terrain;
+    private Boolean isVisible;
+    private Boolean isVisited;
+    private ArrayList<Entity> inhabitant = new ArrayList<>(); // this doesn't need to be an arraylist?
+    private Boolean[] pathDirection = new Boolean[4];
+    public Coordinate getCurrentPosition() {
+        return currentPosition;
     }
 
-    public void setTerrain(Terrain terrain) {
+    public void setCurrentPosition(Coordinate currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    public Boolean getVisited() {
+        return isVisited;
+    }
+
+    public void setVisited(Boolean visited) {
+        this.isVisited = visited;
+    }
+
+    public Terrain getTerrain() {
+
+        return this.terrain;
+    }
+
+    public void setTerrain(Terrain terrain)
+    {
         this.terrain = terrain;
     }
 
     public Boolean getVisible() {
-        return isVisible;
+        return this.isVisible;
     }
 
     public void setVisible(Boolean visible) {
-        isVisible = visible;
+        this.isVisible = visible;
     }
 
     public ArrayList<Entity> getInhabitant() {
-        return inhabitant;
+        return this.inhabitant;
     }
 
     public void setInhabitant(ArrayList<Entity> inhabitant) {

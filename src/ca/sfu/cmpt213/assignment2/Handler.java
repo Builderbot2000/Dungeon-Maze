@@ -1,9 +1,6 @@
 package ca.sfu.cmpt213.assignment2;
 
-import ca.sfu.cmpt213.assignment2.model.Entity;
-import ca.sfu.cmpt213.assignment2.model.Hero;
-import ca.sfu.cmpt213.assignment2.model.Level;
-import ca.sfu.cmpt213.assignment2.model.Monster;
+import ca.sfu.cmpt213.assignment2.model.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -62,6 +59,10 @@ public class Handler {
     }
 
     public void setUpUI() {
+        helpMenu();
+        String[][] drawnMap = new String[Level.MAP_HEIGHT][Level.MAP_WIDTH];
+        drawDungeon(drawnMap);
+        print2D(drawnMap);
         System.out.println(this.level.toString(entityList));
         this.printStats();
         System.out.println("Enter your move [W|A|S|D?]:");
@@ -86,6 +87,40 @@ public class Handler {
             }
             default -> System.out.println("Invalid input! Input can only be W|A|S|D.");
         }
+
+
+    }
+    private static void drawDungeon(String[][] drawnMap){
+
+        Level myDungeon = new Level();
+        Tile[][] map = myDungeon.getMap();
+
+        for(int x = 0; x< Level.MAP_HEIGHT; x++){
+            for(int y = 0; y<Level.MAP_WIDTH;y++){
+                if(!map[x][y].getVisible()){
+                    drawnMap[x][y] = ".";
+                }
+                else if(map[x][y].getVisible() && map[x][y].getTerrain() == Tile.Terrain.wall){
+                    drawnMap[x][y] = "#";
+                }
+                else if(map[x][y].getVisible() && map[x][y].getTerrain() == Tile.Terrain.empty){
+                    drawnMap[x][y] = " ";
+                }
+            }
+        }
+
+    }
+    public static void print2D(String[][] mat) {
+        // Loop through all rows
+        for (String[] chars : mat) {
+            // Loop through all elements of current row
+            for (String aChar : chars) {
+                System.out.print(aChar + " ");
+            }
+            System.out.println();
+
+        }
+
     }
 
     private static void resolveOverlap() {
