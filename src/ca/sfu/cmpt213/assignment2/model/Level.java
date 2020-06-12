@@ -148,7 +148,7 @@ public class Level {
         this.map = map;
     }
 
-    public StringBuilder toString(Tile[][] tempMap) {
+    public String toString(Tile[][] tempMap) {
         StringBuilder output = new StringBuilder();
         for (Tile[] tiles : tempMap) {
             StringBuilder line = new StringBuilder();
@@ -167,6 +167,6 @@ public class Level {
             line.append("\n");
             output.append(line);
         }
-        return output;
+        return output.toString();
     }
 }
