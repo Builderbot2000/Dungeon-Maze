@@ -18,7 +18,7 @@ COMMIT & PUSH:
 1. Always create or make changes to the corrosponding documentation in Creately before actual commit.
    (Make sure to have documentation for every single class)
 
-2. Go to VCS | Git | Update Project to make sure the local project is in sync.
+2. Go to VCS | Git | Fetch to make sure the local project is in sync.
 
 3. Make changes to the file in IntelliJ
 
