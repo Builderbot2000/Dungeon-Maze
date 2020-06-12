@@ -7,15 +7,6 @@ import java.util.ArrayList;
  */
 
 public class Tile {
-
-
-    public enum Terrain {   //lets discuss this, however feel free to play around with the location of these enums according to how you code and just let me know
-        /*
-         maybe we can consider making a separate .java file
-         or we can make it static and just use Tile.Terrain to access it in UI if we need to?
-      */
-        empty, wall
-    }
     private Coordinate currentPosition = new Coordinate();
     private Terrain terrain;
     private Boolean isVisible;
@@ -39,7 +30,6 @@ public class Tile {
     }
 
     public Terrain getTerrain() {
-
         return this.terrain;
     }
 

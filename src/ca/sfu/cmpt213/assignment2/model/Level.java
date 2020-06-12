@@ -1,7 +1,6 @@
 package ca.sfu.cmpt213.assignment2.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Stack;
 
@@ -12,14 +11,11 @@ import java.util.Stack;
 public class Level {
 
 
-    public static final int MAP_WIDTH = 15;
-    public static final int MAP_HEIGHT = 20;
-    private static final int CHAMBER_WIDTH = 14;
-    private static final int CHAMBER_HEIGHT = 19;
+    public static final int MAP_WIDTH = 15, MAP_HEIGHT = 20, CHAMBER_WIDTH = 14, CHAMBER_HEIGHT = 19;
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private static int numberOfCellsVisited;
     private static final Stack<Tile> mapStack = new Stack<>();
-    private Tile[][] tempMap = new Tile[CHAMBER_HEIGHT/2][CHAMBER_WIDTH/2]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
+    private final Tile[][] tempMap = new Tile[CHAMBER_HEIGHT/2][CHAMBER_WIDTH/2]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
 
     /**
      * Creates the "chamber" where the 20x15 matrix's walls are created. Thus we only work with the left over 18x13 space
@@ -44,7 +40,6 @@ public class Level {
         The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
         I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
          */
-
         while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)/4)
         {
             yIndex = currentTile.getCurrentPosition().getY();
@@ -80,7 +75,7 @@ public class Level {
                 //generate random number between 0 and 3 for direction
                 Random rand = new Random();
                 int upperBound = 4;
-                boolean randomizer = false;
+                boolean randomizer;
                 int myDirection;
                 do {
                     myDirection = rand.nextInt(upperBound);
@@ -88,39 +83,33 @@ public class Level {
                 } while (!randomizer);
                 //knock down wall
                 switch (myDirection) {
-
-                    case 0:
-                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Tile.Terrain.empty);
+                    case 0 -> {
+                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.empty);
                         mapStack.push(map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()];
-                        break;
-                    case 1:
-                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Tile.Terrain.empty);
+                    }
+                    case 1 -> {
+                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.empty);
                         mapStack.push(map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()];
-                        break;
-                    case 2:
-                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Tile.Terrain.empty);
+                    }
+                    case 2 -> {
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Terrain.empty);
                         mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1];
-                        break;
-                    case 3:
-                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Tile.Terrain.empty);
+                    }
+                    case 3 -> {
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Terrain.empty);
                         mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1];
-                        break;
-
+                    }
                 }
-
                 numberOfCellsVisited++;
-
             } else {
                 currentTile = mapStack.pop(); //backtrack
             }
-
         }
     }
-
 
     private void createChamber() {
         /*
@@ -140,28 +129,18 @@ public class Level {
                 } else {
                     map[y][x].setVisible(true);
                     map[y][x].setVisited(false);
-
                 }
-
-
-                map[y][x].setTerrain(Tile.Terrain.wall); // fill everywhere with walls
-
-
+                map[y][x].setTerrain(Terrain.wall); // fill everywhere with walls
                 map[y][x].setCurrentPosition(new Coordinate(x, y)); //get all coordinates
-
-
             }
         }
-
         numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         map[1][1].setVisited(true);
         mapStack.push(map[1][1]); //Chamber start position
         initializeChamber(map[1][1]); //Chamber start position
-
     }
 
     public Tile[][] getMap() {
-
         return map;
     }
 
@@ -169,8 +148,25 @@ public class Level {
         this.map = map;
     }
 
-
-    public String toString(ArrayList<Entity> entityList) {
-        return "";
+    public String toString(Tile[][] tempMap) {
+        StringBuilder output = new StringBuilder();
+        for (Tile[] tiles : tempMap) {
+            StringBuilder line = new StringBuilder();
+            for (Tile tile : tiles) {
+                if (tile.getVisible()) {
+                    Terrain terrain = tile.getTerrain();
+                    if (terrain == Terrain.empty) {
+                        line.append(" ");
+                    } else {
+                        line.append("#");
+                    }
+                } else {
+                    line.append(".");
+                }
+            }
+            line.append("\n");
+            output.append(line);
+        }
+        return output.toString();
     }
 }
