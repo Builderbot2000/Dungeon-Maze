@@ -38,16 +38,16 @@ public class Handler {
     */
     public static void helpMenu() {
         String output = "DIRECTIONS:\n" +
-                        " Kill 3 Monsters!\n" +
-                        "LEGEND:\n" +
-                        " #: Wall\n" +
-                        " @: You (a hero)\n" +
-                        " !: Monster\n" +
-                        " $: Power\n" +
-                        ".: Unexplored space\n" +
-                        "MOVES:\n" +
-                        " Use W (up), A (left), S (down) and D (right) to move.\n" +
-                        " (You must press enter after each move)";
+                " Kill 3 Monsters!\n" +
+                "LEGEND:\n" +
+                " #: Wall\n" +
+                " @: You (a hero)\n" +
+                " !: Monster\n" +
+                " $: Power\n" +
+                ".: Unexplored space\n" +
+                "MOVES:\n" +
+                " Use W (up), A (left), S (down) and D (right) to move.\n" +
+                " (You must press enter after each move)\n";
         System.out.println(output);
     }
 
@@ -59,11 +59,7 @@ public class Handler {
     }
 
     public void setUpUI() {
-        helpMenu();
-        String[][] drawnMap = new String[Level.MAP_HEIGHT][Level.MAP_WIDTH];
-        drawDungeon(drawnMap);
-        print2D(drawnMap);
-        System.out.println(this.level.toString(entityList));
+        System.out.println(this.level.toString());
         this.printStats();
         System.out.println("Enter your move [W|A|S|D?]:");
         String entry = scanner.nextLine();
@@ -87,50 +83,13 @@ public class Handler {
             }
             default -> System.out.println("Invalid input! Input can only be W|A|S|D.");
         }
-
-
-    }
-    private static void drawDungeon(String[][] drawnMap){
-
-        Level myDungeon = new Level();
-        Tile[][] map = myDungeon.getMap();
-
-        for(int x = 0; x< Level.MAP_HEIGHT; x++){
-            for(int y = 0; y<Level.MAP_WIDTH;y++){
-                if(!map[x][y].getVisible()){
-                    drawnMap[x][y] = ".";
-                }
-                else if(map[x][y].getVisible() && map[x][y].getTerrain() == Tile.Terrain.wall){
-                    drawnMap[x][y] = "#";
-                }
-                else if(map[x][y].getVisible() && map[x][y].getTerrain() == Tile.Terrain.empty){
-                    drawnMap[x][y] = " ";
-                }
-            }
-        }
-
-    }
-    public static void print2D(String[][] mat) {
-        // Loop through all rows
-        for (String[] chars : mat) {
-            // Loop through all elements of current row
-            for (String aChar : chars) {
-                System.out.print(aChar + " ");
-            }
-            System.out.println();
-
-        }
-
     }
 
     private static void resolveOverlap() {
 
     }
 
-    private static void enableDebugMode() {
-        /*
-            Don't remember how we decided to implement this
-            so I left the method type void
-         */
+    private void enableDebugMode() {
+        this.hero.setPowerCount(999999);
     }
 }

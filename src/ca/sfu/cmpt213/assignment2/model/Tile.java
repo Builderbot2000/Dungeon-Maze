@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class Tile {
     private Coordinate currentPosition = new Coordinate();
     private Terrain terrain;
-    private Boolean isVisible;
-    private Boolean isVisited;
+    private Boolean isVisible, isVisited;
     private ArrayList<Entity> inhabitant = new ArrayList<>(); // this doesn't need to be an arraylist?
     private Boolean[] pathDirection = new Boolean[4];
+
     public Coordinate getCurrentPosition() {
         return currentPosition;
     }

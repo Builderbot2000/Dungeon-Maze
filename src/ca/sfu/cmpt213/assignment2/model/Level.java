@@ -83,22 +83,22 @@ public class Level {
                 //knock down wall
                 switch (myDirection) {
                     case 0 -> {
-                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.empty);
+                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.EMPTY);
                         mapStack.push(map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()];
                     }
                     case 1 -> {
-                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.empty);
+                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.EMPTY);
                         mapStack.push(map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()];
                     }
                     case 2 -> {
-                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Terrain.empty);
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Terrain.EMPTY);
                         mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1];
                     }
                     case 3 -> {
-                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Terrain.empty);
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Terrain.EMPTY);
                         mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1];
                     }
@@ -129,7 +129,7 @@ public class Level {
                     map[y][x].setVisible(true);
                     map[y][x].setVisited(false);
                 }
-                map[y][x].setTerrain(Terrain.wall); // fill everywhere with walls
+                map[y][x].setTerrain(Terrain.WALL); // fill everywhere with walls
                 map[y][x].setCurrentPosition(new Coordinate(x, y)); //get all coordinates
             }
         }
@@ -155,7 +155,7 @@ public class Level {
             for (Tile tile : tiles) {
                 if (tile.getVisible()) {
                     Terrain terrain = tile.getTerrain();
-                    if (terrain == Terrain.empty) {
+                    if (terrain == Terrain.EMPTY) {
                         line.append("  ");
                     } else {
                         line.append("# ");
