@@ -15,7 +15,7 @@ public class Level {
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private static int numberOfCellsVisited;
     private static final Stack<Tile> mapStack = new Stack<>();
-    private final Tile[][] tempMap = new Tile[CHAMBER_HEIGHT/2][CHAMBER_WIDTH/2]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
+    // private final Tile[][] tempMap = new Tile[CHAMBER_HEIGHT/2][CHAMBER_WIDTH/2]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
 
     /**
      * Creates the "chamber" where the 20x15 matrix's walls are created. Thus we only work with the left over 18x13 space
@@ -23,7 +23,6 @@ public class Level {
      * the LENGTHS being 18 and 13 respectively. This is to ensure that we are working within the chamber and not modifying the
      * walls of the chamber while using our algorithm to generate the maze
      */
-    //we can actually omit the Tile.Terrain.wall or empty by just moving the enum to a seperate file....
     public Level() {
         for (int i = 0; i < MAP_HEIGHT; i++) {
             for (int j = 0; j < MAP_WIDTH; j++)
@@ -148,20 +147,21 @@ public class Level {
         this.map = map;
     }
 
-    public String toString(Tile[][] tempMap) {
+    @Override
+    public String toString() {
         StringBuilder output = new StringBuilder();
-        for (Tile[] tiles : tempMap) {
+        for (Tile[] tiles : this.map) {
             StringBuilder line = new StringBuilder();
             for (Tile tile : tiles) {
                 if (tile.getVisible()) {
                     Terrain terrain = tile.getTerrain();
                     if (terrain == Terrain.empty) {
-                        line.append(" ");
+                        line.append("  ");
                     } else {
-                        line.append("#");
+                        line.append("# ");
                     }
                 } else {
-                    line.append(".");
+                    line.append(". ");
                 }
             }
             line.append("\n");
