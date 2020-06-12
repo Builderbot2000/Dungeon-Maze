@@ -25,10 +25,13 @@ public class Handler {
         scanner = in;
         this.level = new Level();
         this.hero = new Hero();
+
+        // Spawn hero and three monsters
         entityList.add(this.hero);
-        for (int i = 0; i < monsterCount; i++) {
-            entityList.add(new Monster());
-        }
+        entityList.add(new Monster(Level.MAP_WIDTH - 2, 1));
+        entityList.add(new Monster(1, Level.MAP_HEIGHT - 2));
+        entityList.add(new Monster(Level.MAP_WIDTH - 2, Level.MAP_HEIGHT - 2));
+
         helpMenu();
     }
 
@@ -47,7 +50,8 @@ public class Handler {
                 ".: Unexplored space\n" +
                 "MOVES:\n" +
                 " Use W (up), A (left), S (down) and D (right) to move.\n" +
-                " (You must press enter after each move)\n";
+                " (You must press enter after each move)\n" +
+                " Press Q to quit the game or press H to bring up the help menu.\n";
         System.out.println(output);
     }
 
@@ -59,29 +63,37 @@ public class Handler {
     }
 
     public void setUpUI() {
-        System.out.println(this.level.toString());
-        this.printStats();
-        System.out.println("Enter your move [W|A|S|D?]:");
-        String entry = scanner.nextLine();
+        boolean running = true;
+        while (running) {
+            System.out.println(this.level.toString());
+            this.printStats();
+            System.out.println("Enter your move - [W|A|S|D] or [Q|H]:");
+            String entry = scanner.nextLine();
 
-        switch (entry) {
-            case "N" -> {
-                System.out.println("Moving north...");
-                hero.move("N");
+            switch (entry) {
+                case "N" -> {
+                    System.out.println("Moving north...");
+                    hero.move("N");
+                }
+                case "W" -> {
+                    System.out.println("Moving west...");
+                    hero.move("W");
+                }
+                case "S" -> {
+                    System.out.println("Moving south...");
+                    hero.move("S");
+                }
+                case "E" -> {
+                    System.out.println("Moving east...");
+                    hero.move("E");
+                }
+                case "H" -> helpMenu();
+                case "Q" -> {
+                    System.out.println("Quitting...");
+                    running = false;
+                }
+                default -> System.out.println("Invalid input! Input can only be W|A|S|D or Q.");
             }
-            case "W" -> {
-                System.out.println("Moving west...");
-                hero.move("W");
-            }
-            case "S" -> {
-                System.out.println("Moving south...");
-                hero.move("S");
-            }
-            case "E" -> {
-                System.out.println("Moving east...");
-                hero.move("E");
-            }
-            default -> System.out.println("Invalid input! Input can only be W|A|S|D.");
         }
     }
 
@@ -89,7 +101,15 @@ public class Handler {
 
     }
 
-    private void enableDebugMode() {
+    public void enableDebugMode() {
+        // Set all tiles to visible
+        for (Tile[] tiles : level.getMap()) {
+            for (Tile tile : tiles) {
+                tile.setVisible(true);
+            }
+        }
+
+        // Set hero to invincible
         this.hero.setPowerCount(999999);
     }
 }

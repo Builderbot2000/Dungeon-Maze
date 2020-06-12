@@ -10,6 +10,7 @@ public class Hero extends Entity {
     int powerCount; //number of powers collected
 
     public Hero() {
+        this.setAlive(true);
         this.killCount = 0;
         this.powerCount = 0;
     }

@@ -1,6 +1,7 @@
 package ca.sfu.cmpt213.assignment2.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 
@@ -9,8 +10,6 @@ import java.util.Stack;
  */
 
 public class Level {
-
-
     public static final int MAP_WIDTH = 15, MAP_HEIGHT = 20, CHAMBER_WIDTH = 14, CHAMBER_HEIGHT = 19;
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private static int numberOfCellsVisited;
@@ -110,10 +109,32 @@ public class Level {
         }
     }
 
+    /**
+     * Creates an empty chamber with walls on all four edges.
+     */
     private void createChamber() {
+        // Fill top edge with walls
+        for (Tile tile : map[0]) {
+            tile.setTerrain(Terrain.WALL);
+            tile.setVisible(true);
+        }
+
+        // Fill sides with walls
+        for (Tile[] tiles: map) {
+            tiles[0].setTerrain(Terrain.WALL);
+            tiles[0].setVisible(true);
+            tiles[MAP_WIDTH - 1].setTerrain(Terrain.WALL);
+            tiles[MAP_WIDTH - 1].setVisible(true);
+        }
+
+        // Fill bottom edge with walls
+        for (Tile tile : map[MAP_HEIGHT - 1]) {
+            tile.setTerrain(Terrain.WALL);
+            tile.setVisible(true);
+        }
         /*
         filling in the entire matrix with walls where in which I can break them down
-         */
+
         for (int y = 0; y < MAP_HEIGHT; y++) {
             for (int x = 0; x < MAP_WIDTH; x++) {
                 if (y == 0) { //make walls surrounding chamber visible
@@ -136,7 +157,8 @@ public class Level {
         numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         map[1][1].setVisited(true);
         mapStack.push(map[1][1]); //Chamber start position
-        initializeChamber(map[1][1]); //Chamber start position
+         */
+        // initializeChamber(map[1][1]); //Chamber start position
     }
 
     public Tile[][] getMap() {

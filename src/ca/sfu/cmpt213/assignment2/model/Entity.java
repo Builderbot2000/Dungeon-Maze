@@ -8,6 +8,17 @@ public abstract class Entity {
     private boolean isAlive;
     private Coordinate position;
 
+    public void move(String input) {
+        /*
+        switch (input) {
+            case "N" -> {
+                int expectedY = position.getY() + 1;
+            }
+        }
+        */
+    }
+
+    // Getters and Setters
     public boolean isAlive() {
         return isAlive;
     }
@@ -22,9 +33,5 @@ public abstract class Entity {
 
     public void setPosition(Coordinate position) {
         this.position = position;
-    }
-
-    public void move(String input) {
-
     }
 }

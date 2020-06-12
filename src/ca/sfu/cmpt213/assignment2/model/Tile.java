@@ -7,12 +7,19 @@ import java.util.ArrayList;
  */
 
 public class Tile {
-    private Coordinate currentPosition = new Coordinate();
+    private Coordinate currentPosition;
     private Terrain terrain;
-    private Boolean isVisible, isVisited;
-    private ArrayList<Entity> inhabitant = new ArrayList<>(); // this doesn't need to be an arraylist?
+    private Boolean isVisible, isVisited, isInhabited;
+    private ArrayList<Entity> inhabitants = new ArrayList<>(); // this doesn't need to be an arraylist?
     private Boolean[] pathDirection = new Boolean[4];
 
+    public Tile() {
+        terrain = Terrain.EMPTY;
+        isVisible = false;
+        isInhabited = false;
+    }
+
+    // Getters and Setters
     public Coordinate getCurrentPosition() {
         return currentPosition;
     }
@@ -46,11 +53,11 @@ public class Tile {
         this.isVisible = visible;
     }
 
-    public ArrayList<Entity> getInhabitant() {
-        return this.inhabitant;
+    public ArrayList<Entity> getInhabitants() {
+        return this.inhabitants;
     }
 
-    public void setInhabitant(ArrayList<Entity> inhabitant) {
-        this.inhabitant = inhabitant;
+    public void setInhabitants(ArrayList<Entity> inhabitants) {
+        this.inhabitants = inhabitants;
     }
 }
