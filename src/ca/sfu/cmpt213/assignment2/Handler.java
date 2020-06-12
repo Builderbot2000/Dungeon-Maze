@@ -133,9 +133,9 @@ public class Handler {
             // Tile transition procedures
             entity.setPosition(newCoordinates);
             originalTile.removeInhabitant(entity);
-            originalTile.update(true,false);
+            originalTile.updateTile(true,false);
             targetTile.addInhabitant(entity);
-            targetTile.update(true,false);
+            targetTile.updateTile(true,false);
 
             // Reveal tiles if entity is hero
             if (entity.symbol.equals("@")) revealTiles(entity);

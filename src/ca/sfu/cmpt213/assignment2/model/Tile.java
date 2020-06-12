@@ -58,7 +58,7 @@ public class Tile {
 
     public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
 
-    public void update(boolean flag1, boolean flag2) {
+    public void updateTile(boolean flag1, boolean flag2) {
 
         // Automatically sets isInhabited flag
         if (flag1) this.isInhabited = this.inhabitants.size() != 0;
