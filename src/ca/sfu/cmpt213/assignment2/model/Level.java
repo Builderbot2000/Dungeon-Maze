@@ -10,6 +10,7 @@ import java.util.Stack;
  */
 
 public class Level {
+
     public static final int MAP_WIDTH = 15, MAP_HEIGHT = 20, CHAMBER_WIDTH = 14, CHAMBER_HEIGHT = 19;
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private static int numberOfCellsVisited;
@@ -176,11 +177,16 @@ public class Level {
             StringBuilder line = new StringBuilder();
             for (Tile tile : tiles) {
                 if (tile.getVisible()) {
-                    Terrain terrain = tile.getTerrain();
-                    if (terrain == Terrain.EMPTY) {
-                        line.append("  ");
-                    } else {
-                        line.append("# ");
+                    if (tile.getIsInhabited()) {
+                        line.append(tile.getInhabitants().get(0).symbol).append(" ");
+                    }
+                    else {
+                        Terrain terrain = tile.getTerrain();
+                        if (terrain == Terrain.EMPTY) {
+                            line.append("  ");
+                        } else {
+                            line.append("# ");
+                        }
                     }
                 } else {
                     line.append(". ");

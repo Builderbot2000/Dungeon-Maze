@@ -7,6 +7,7 @@ public abstract class Entity {
 
     private boolean isAlive;
     private Coordinate position;
+    public String symbol = "E";
 
     public void move(String input) {
         /*

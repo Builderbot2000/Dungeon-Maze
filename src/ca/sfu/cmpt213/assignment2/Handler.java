@@ -11,6 +11,7 @@ import java.util.Scanner;
  */
 
 public class Handler {
+
     private Scanner scanner;
     private Level level;
     private Hero hero;
@@ -24,13 +25,13 @@ public class Handler {
     Handler(Scanner in) {
         scanner = in;
         this.level = new Level();
-        this.hero = new Hero();
 
         // Spawn hero and three monsters
-        entityList.add(this.hero);
-        entityList.add(new Monster(Level.MAP_WIDTH - 2, 1));
-        entityList.add(new Monster(1, Level.MAP_HEIGHT - 2));
-        entityList.add(new Monster(Level.MAP_WIDTH - 2, Level.MAP_HEIGHT - 2));
+        this.hero = new Hero(1,1);
+        spawnEntity(hero);
+        spawnEntity(new Monster(Level.MAP_WIDTH - 2,1));
+        spawnEntity(new Monster(1,Level.MAP_HEIGHT - 2));
+        spawnEntity(new Monster(Level.MAP_WIDTH - 2,Level.MAP_HEIGHT - 2));
 
         helpMenu();
     }
@@ -99,6 +100,15 @@ public class Handler {
 
     private static void resolveOverlap() {
 
+    }
+
+    public void spawnEntity(Entity entity) {
+        entityList.add(entity);
+        Coordinate entityPosition = entity.getPosition();
+        int x = entityPosition.getX();
+        int y = entityPosition.getY();
+        this.level.getMap()[y][x].addInhabitant(entity);
+        this.level.getMap()[y][x].setIsInhabited(true);
     }
 
     public void enableDebugMode() {

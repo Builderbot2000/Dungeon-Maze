@@ -6,11 +6,13 @@ package ca.sfu.cmpt213.assignment2.model;
  */
 public class Hero extends Entity {
 
-    int killCount; //number of monsters killed
-    int powerCount; //number of powers collected
+    private int killCount; //number of monsters killed
+    private int powerCount; //number of powers collected
 
-    public Hero() {
+    public Hero(int x, int y) {
+        symbol = "@";
         this.setAlive(true);
+        this.setPosition(new Coordinate(x,y));
         this.killCount = 0;
         this.powerCount = 0;
     }

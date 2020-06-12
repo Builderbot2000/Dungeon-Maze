@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public class Tile {
+
     private Coordinate currentPosition;
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
@@ -53,11 +54,15 @@ public class Tile {
         this.isVisible = visible;
     }
 
+    public Boolean getIsInhabited() { return isInhabited; }
+
+    public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
+
     public ArrayList<Entity> getInhabitants() {
         return this.inhabitants;
     }
 
-    public void setInhabitants(ArrayList<Entity> inhabitants) {
-        this.inhabitants = inhabitants;
+    public void addInhabitant(Entity newInhabitant) {
+        this.inhabitants.add(newInhabitant);
     }
 }
