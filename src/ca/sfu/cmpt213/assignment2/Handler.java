@@ -40,13 +40,13 @@ public class Handler {
         String output = "DIRECTIONS:\n" +
                         " Kill 3 Monsters!\n" +
                         "LEGEND:\n" +
-                        " #: Wall" +
-                        " @: You (a hero)" +
-                        " !: Monster" +
-                        " $: Power" +
-                        ".: Unexplored space" +
-                        "MOVES:" +
-                        " Use W (up), A (left), S (down) and D (right) to move." +
+                        " #: Wall\n" +
+                        " @: You (a hero)\n" +
+                        " !: Monster\n" +
+                        " $: Power\n" +
+                        ".: Unexplored space\n" +
+                        "MOVES:\n" +
+                        " Use W (up), A (left), S (down) and D (right) to move.\n" +
                         " (You must press enter after each move)";
         System.out.println(output);
     }
