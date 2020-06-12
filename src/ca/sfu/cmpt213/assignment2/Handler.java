@@ -86,20 +86,35 @@ public class Handler {
         }
     }
 
-    private static void resolveOverlap() {
-
-    }
-
     public void spawnEntity(Entity entity) {
         entityList.add(entity);
         setEntity(entity,entity.getPosition());
     }
 
     public void setEntity(Entity entity, Coordinates newCoordinates) {
-        int x = newCoordinates.getX();
-        int y = newCoordinates.getY();
-        this.level.getMap()[y][x].addInhabitant(entity);
-        this.level.getMap()[y][x].update();
+
+        // Define original and new coordinates
+        int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
+        int newX = newCoordinates.getX(), newY = newCoordinates.getY();
+        Tile originalTile = this.level.getMap()[originalY][originalX];
+        Tile targetTile = this.level.getMap()[newY][newX];
+
+        // New coordinates feasibility check
+        if (targetTile.getTerrain() != Terrain.WALL) {
+
+            // Tile transition procedures
+            entity.setPosition(newCoordinates);
+            originalTile.removeInhabitant(entity);
+            originalTile.update();
+            targetTile.addInhabitant(entity);
+            targetTile.update();
+
+            // Trigger overlap resolution
+            if (targetTile.getInhabitants().size() > 1) {
+                resolveOverlap(targetTile.getInhabitants());
+            }
+        }
+        else System.out.println("You can't pass through walls!");
     }
 
     public void moveEntity(Entity entity, Direction direction) {
@@ -114,24 +129,15 @@ public class Handler {
             case EAST -> newX = originalX + 1;
         }
         System.out.println("Moving " + direction);
+        setEntity(entity,new Coordinates(newX,newY));
+    }
 
-        // New coordinates feasibility check
-        Tile originalTile = this.level.getMap()[originalY][originalX];
-        Tile targetTile = this.level.getMap()[newY][newX];
-        if (targetTile.getTerrain() != Terrain.WALL) {
-            if (targetTile.getIsInhabited()) {
-                System.out.println("Overlap!");
-            }
-            entity.setPosition(new Coordinates(newX,newY));
-            originalTile.removeInhabitant(entity);
-            originalTile.update();
-            targetTile.addInhabitant(entity);
-            targetTile.update();
-        }
-        else System.out.println("You can't pass through walls!");
+    private static void resolveOverlap(ArrayList<Entity> entityList) {
+        System.out.println("Resolve Overlap!");
     }
 
     public void enableDebugMode() {
+
         // Set all tiles to visible
         for (Tile[] tiles : level.getMap()) {
             for (Tile tile : tiles) {
