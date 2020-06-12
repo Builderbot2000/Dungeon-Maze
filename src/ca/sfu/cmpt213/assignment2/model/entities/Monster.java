@@ -1,4 +1,6 @@
-package ca.sfu.cmpt213.assignment2.model;
+package ca.sfu.cmpt213.assignment2.model.entities;
+
+import ca.sfu.cmpt213.assignment2.model.Entity;
 
 /**
  * Monster class which inherits its fields from Entity.
@@ -6,10 +8,10 @@ package ca.sfu.cmpt213.assignment2.model;
  */
 public class Monster extends Entity {
 
+    public static final String SYMBOL = "!";
+
     public Monster(int x, int y) {
-        symbol = "!";
-        this.setAlive(true);
-        this.setPosition(new Coordinates(x,y));
+        super(x,y,SYMBOL);
     }
 
     public void update() {

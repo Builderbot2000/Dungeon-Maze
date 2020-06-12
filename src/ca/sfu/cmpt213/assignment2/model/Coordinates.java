@@ -12,6 +12,7 @@ public class Coordinates {
         this.y = y;
     }
 
+    // Getters and Setters
     public int getX() {
         return x;
     }
@@ -26,13 +27,5 @@ public class Coordinates {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    @Override
-    public String toString() {
-        return "Coordinates{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
     }
 }

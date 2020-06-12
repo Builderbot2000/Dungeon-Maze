@@ -1,8 +1,13 @@
 package ca.sfu.cmpt213.assignment2;
 
 import ca.sfu.cmpt213.assignment2.model.*;
+import ca.sfu.cmpt213.assignment2.model.Entity;
+import ca.sfu.cmpt213.assignment2.model.entities.Hero;
+import ca.sfu.cmpt213.assignment2.model.entities.Monster;
+import ca.sfu.cmpt213.assignment2.model.entities.Power;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -15,7 +20,8 @@ public class Handler {
     private Scanner scanner;
     private Level level;
     private Hero hero;
-    private static int monsterCount = 3;
+    private static final int MONSTER_COUNT = 3;
+    private static final int POWER_COUNT = 3;
 
     /**
      * The entityList hosts the hero at index 0 and the three monsters at index 1,2,3 respectively.
@@ -23,16 +29,32 @@ public class Handler {
     ArrayList<Entity> entityList = new ArrayList<>();
 
     Handler(Scanner in) {
+
+        // Set input scanner
         scanner = in;
+
+        // Create level
         this.level = new Level();
 
-        // Spawn hero and three monsters
+        // Spawn hero
         this.hero = new Hero(1,1);
         spawnEntity(hero);
+
+        // Spawn three monsters
         spawnEntity(new Monster(Level.MAP_WIDTH - 2,1));
         spawnEntity(new Monster(1,Level.MAP_HEIGHT - 2));
         spawnEntity(new Monster(Level.MAP_WIDTH - 2,Level.MAP_HEIGHT - 2));
 
+        // Spawn powers in random locations, keep trying until POWER_COUNT powers have been
+        // successfully spawned
+        int placementSuccess = 0;
+        while (placementSuccess < POWER_COUNT) {
+            int randomX = new Random().nextInt((Level.MAP_WIDTH - 3) - 3) + 3;
+            int randomY = new Random().nextInt((Level.MAP_HEIGHT - 3) - 3) + 3;
+            if (spawnEntity(new Power(randomX,randomY))) placementSuccess ++;
+        }
+
+        // Initialize help menu
         helpMenu();
     }
 
@@ -40,6 +62,8 @@ public class Handler {
         Set all methods to private as we don't have to call any of them
         inside out main (besides setupUI?)
     */
+
+    // User Interface Methods
     public static void helpMenu() {
         String output = "DIRECTIONS:\n" +
                 " Kill 3 Monsters!\n" +
@@ -57,7 +81,7 @@ public class Handler {
     }
 
     public void printStats() {
-        System.out.println("Total number of monsters to be killed: " + monsterCount);
+        System.out.println("Total number of monsters to be killed: " + MONSTER_COUNT);
         System.out.println("Number of powers currently in possession: " + this.hero.getPowerCount());
         int survivorCount = this.entityList.size() - 1;
         System.out.println("Number of monsters alive: " + survivorCount);
@@ -79,19 +103,23 @@ public class Handler {
                 case "H" -> helpMenu();
                 case "Q" -> {
                     System.out.println("Quitting...");
-                    running = false;
+                    hero.setAlive(false);
                 }
                 default -> System.out.println("Invalid input! Input can only be W|A|S|D or Q.");
             }
+            revealTiles(hero);
+            running = hero.isAlive();
         }
     }
 
-    public void spawnEntity(Entity entity) {
-        entityList.add(entity);
-        setEntity(entity,entity.getPosition());
+    // Entity Manipulation Methods
+    private boolean spawnEntity(Entity entity) {
+        boolean success = setEntity(entity,entity.getPosition());
+        if (success) entityList.add(entity);
+        return success;
     }
 
-    public void setEntity(Entity entity, Coordinates newCoordinates) {
+    private boolean setEntity(Entity entity, Coordinates newCoordinates) {
 
         // Define original and new coordinates
         int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
@@ -105,21 +133,39 @@ public class Handler {
             // Tile transition procedures
             entity.setPosition(newCoordinates);
             originalTile.removeInhabitant(entity);
-            originalTile.update();
+            originalTile.update(true,false);
             targetTile.addInhabitant(entity);
-            targetTile.update();
+            targetTile.update(true,false);
+
+            // Reveal tiles if entity is hero
+            if (entity.symbol.equals("@")) revealTiles(entity);
 
             // Trigger overlap resolution
             if (targetTile.getInhabitants().size() > 1) {
                 resolveOverlap(targetTile.getInhabitants());
             }
+
+            return true;
         }
-        else System.out.println("You can't pass through walls!");
+        else return false;
     }
 
-    public void moveEntity(Entity entity, Direction direction) {
+    private void moveEntity(Entity entity, Direction direction) {
 
-        // Generate new coordinates based on movement
+        System.out.println("Moving " + direction);
+        if (!setEntity(entity,locateDirection(entity,direction)) && entity.symbol.equals("@")) {
+            System.out.println("You can't pass through walls!");
+        }
+    }
+
+    /**
+     * // Generate new coordinates based on direction
+     * @param entity the entity from which the detection will originate
+     * @param direction the direction to be detected
+     * @return coordinates of the detected direction
+     */
+    private static Coordinates locateDirection (Entity entity, Direction direction) {
+
         int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
         int newX = originalX, newY = originalY;
         switch (direction) {
@@ -127,16 +173,32 @@ public class Handler {
             case WEST -> newX = originalX - 1;
             case SOUTH -> newY = originalY + 1;
             case EAST -> newX = originalX + 1;
+            case NORTHEAST -> { newY = originalY - 1; newX = originalX + 1; }
+            case NORTHWEST -> { newY = originalY - 1; newX = originalX - 1; }
+            case SOUTHEAST -> { newY = originalY + 1; newX = originalX + 1; }
+            case SOUTHWEST -> { newY = originalY + 1; newX = originalX - 1; }
         }
-        System.out.println("Moving " + direction);
-        setEntity(entity,new Coordinates(newX,newY));
+        return new Coordinates(newX,newY);
+    }
+
+    private void revealTiles (Entity entity) {
+
+        // Reveal tile that entity is standing on
+        this.level.getMap()[entity.getPosition().getY()][entity.getPosition().getX()].setVisible(true);
+
+        // Reveal tiles around the entity in eight directions
+        for (Direction direction : Direction.values()) {
+            Coordinates targetCoordinates = locateDirection(entity,direction);
+            Tile targetTile = this.level.getMap()[targetCoordinates.getY()][targetCoordinates.getX()];
+            targetTile.setVisible(true);
+        }
     }
 
     private static void resolveOverlap(ArrayList<Entity> entityList) {
         System.out.println("Resolve Overlap!");
     }
 
-    public void enableDebugMode() {
+    public void debug() {
 
         // Set all tiles to visible
         for (Tile[] tiles : level.getMap()) {

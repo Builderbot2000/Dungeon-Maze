@@ -58,9 +58,13 @@ public class Tile {
 
     public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
 
-    public void update() {
-        // Automatically set isInhabited flag
-        this.isInhabited = this.inhabitants.size() != 0;
+    public void update(boolean flag1, boolean flag2) {
+
+        // Automatically sets isInhabited flag
+        if (flag1) this.isInhabited = this.inhabitants.size() != 0;
+
+        // Automatically shuffles inhabitants list by priority
+        if (flag2) System.out.println("Shuffle!");
     }
 
     public ArrayList<Entity> getInhabitants() {
