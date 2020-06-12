@@ -6,8 +6,9 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
-        // Level initialization not yet implemented, do not run.
-        // Handler handler = new Handler(inputScanner);
-        // handler.setUpUI();
+        Handler handler = new Handler(inputScanner);
+        // handler.debug();
+        handler.setUpUI();
+
     }
 }

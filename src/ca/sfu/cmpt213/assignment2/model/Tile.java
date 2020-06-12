@@ -7,17 +7,25 @@ import java.util.ArrayList;
  */
 
 public class Tile {
-    private Coordinate currentPosition = new Coordinate();
+
+    private Coordinates currentPosition;
     private Terrain terrain;
-    private Boolean isVisible;
-    private Boolean isVisited;
-    private ArrayList<Entity> inhabitant = new ArrayList<>(); // this doesn't need to be an arraylist?
+    private Boolean isVisible, isVisited, isInhabited;
+    private ArrayList<Entity> inhabitants = new ArrayList<>(); // this doesn't need to be an arraylist?
     private Boolean[] pathDirection = new Boolean[4];
-    public Coordinate getCurrentPosition() {
+
+    public Tile() {
+        terrain = Terrain.EMPTY;
+        isVisible = false;
+        isInhabited = false;
+    }
+
+    // Getters and Setters
+    public Coordinates getCurrentPosition() {
         return currentPosition;
     }
 
-    public void setCurrentPosition(Coordinate currentPosition) {
+    public void setCurrentPosition(Coordinates currentPosition) {
         this.currentPosition = currentPosition;
     }
 
@@ -46,11 +54,24 @@ public class Tile {
         this.isVisible = visible;
     }
 
-    public ArrayList<Entity> getInhabitant() {
-        return this.inhabitant;
+    public Boolean getIsInhabited() { return isInhabited; }
+
+    public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
+
+    public void update(boolean flag1, boolean flag2) {
+
+        // Automatically sets isInhabited flag
+        if (flag1) this.isInhabited = this.inhabitants.size() != 0;
+
+        // Automatically shuffles inhabitants list by priority
+        if (flag2) System.out.println("Shuffle!");
     }
 
-    public void setInhabitant(ArrayList<Entity> inhabitant) {
-        this.inhabitant = inhabitant;
+    public ArrayList<Entity> getInhabitants() {
+        return this.inhabitants;
     }
+
+    public void addInhabitant(Entity newInhabitant) { this.inhabitants.add(newInhabitant); }
+
+    public void removeInhabitant(Entity entity) { this.inhabitants.remove(entity); }
 }

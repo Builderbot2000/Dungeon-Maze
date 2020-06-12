@@ -5,5 +5,5 @@ public enum Terrain {   //lets discuss this, however feel free to play around wi
      maybe we can consider making a separate .java file
      or we can make it static and just use Tile.Terrain to access it in UI if we need to?
   */
-    empty, wall
+    EMPTY, WALL
 }

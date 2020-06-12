@@ -1,4 +1,6 @@
-package ca.sfu.cmpt213.assignment2.model;
+package ca.sfu.cmpt213.assignment2.model.entities;
+
+import ca.sfu.cmpt213.assignment2.model.Entity;
 
 /**
  * Hero class that is the player with fields kill count and powerCount.
@@ -6,10 +8,12 @@ package ca.sfu.cmpt213.assignment2.model;
  */
 public class Hero extends Entity {
 
-    int killCount; //number of monsters killed
-    int powerCount; //number of powers collected
+    private int killCount; //number of monsters killed
+    private int powerCount; //number of powers collected
+    public static final String SYMBOL = "@";
 
-    public Hero() {
+    public Hero(int x, int y) {
+        super(x,y,SYMBOL);
         this.killCount = 0;
         this.powerCount = 0;
     }
