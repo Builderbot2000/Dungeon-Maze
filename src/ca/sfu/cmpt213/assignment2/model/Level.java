@@ -36,6 +36,7 @@ public class Level {
         The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
         I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
          */
+         /*
         while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)) {
             yIndex = currentTile.getCurrentPosition().getY();
             xIndex = currentTile.getCurrentPosition().getX();
