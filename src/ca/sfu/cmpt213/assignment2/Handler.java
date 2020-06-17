@@ -162,7 +162,7 @@ public class Handler {
             entity.setPosition(newCoordinates);
 
             originalTile.removeThisInhabitant(entity);
-            originalTile.update(true,false);
+            originalTile.updateTile(true,false);
 
             targetTile.addInhabitant(entity);
             targetTile.updateTile(true,false);
