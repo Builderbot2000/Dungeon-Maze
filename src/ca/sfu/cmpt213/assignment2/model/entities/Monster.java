@@ -24,7 +24,8 @@ public class Monster extends Entity {
     public void setPreviousLocation(Coordinates location) { previousLocation = location; }
 
     public Direction getAIDirection (Tile[][] map) {
-        for (Direction direction : Direction.values()) {
+        while (true) {
+            Direction direction = Direction.randomDirection();
             if (
                     direction != Direction.NORTHEAST &&
                     direction != Direction.NORTHWEST &&
@@ -38,6 +39,5 @@ public class Monster extends Entity {
                 }
             }
         }
-        return Direction.EAST;
     }
 }
