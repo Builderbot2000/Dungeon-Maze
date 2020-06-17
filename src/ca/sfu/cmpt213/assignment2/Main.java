@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
         Handler handler = new Handler(inputScanner);
-        // handler.debug();
+        handler.debug();
         handler.setUpUI();
 
     }

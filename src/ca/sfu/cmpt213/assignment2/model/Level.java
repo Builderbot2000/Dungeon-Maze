@@ -31,14 +31,14 @@ public class Level {
         createChamber();
     }
 
-    private void initializeChamber(Tile currentTile) {
+    private void initializeChamber(Tile currentTile) { /*
         int yIndex;
         int xIndex;
-        /*
+
         I was changing my code, I need to implement this logic //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
         The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
         I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
-         */
+
         while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)/4)
         {
             yIndex = currentTile.getCurrentPosition().getY();
@@ -107,7 +107,7 @@ public class Level {
             } else {
                 currentTile = mapStack.pop(); //backtrack
             }
-        }
+        }*/
     }
 
     /**
@@ -133,6 +133,18 @@ public class Level {
             tile.setTerrain(Terrain.WALL);
             tile.setVisible(true);
         }
+
+        // Give all tiles coordinates
+        int CurrentY = 0;
+        for (Tile[] tiles : map) {
+            int CurrentX = 0;
+            for (Tile tile : tiles) {
+                tile.setCurrentPosition(new Coordinates(CurrentX,CurrentY));
+                CurrentX ++;
+            }
+            CurrentY ++;
+        }
+
         /*
         filling in the entire matrix with walls where in which I can break them down
 
@@ -178,7 +190,7 @@ public class Level {
             for (Tile tile : tiles) {
                 if (tile.getVisible()) {
                     if (tile.getIsInhabited()) {
-                        line.append(tile.getInhabitants().get(0).symbol).append(" ");
+                        line.append(tile.getInhabitants().get(0).getSymbol()).append(" ");
                     }
                     else {
                         Terrain terrain = tile.getTerrain();

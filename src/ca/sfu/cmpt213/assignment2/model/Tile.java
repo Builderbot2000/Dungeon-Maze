@@ -1,6 +1,8 @@
 package ca.sfu.cmpt213.assignment2.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Stores information in regards to what the an individual tile holds (Monster,Hero,empty,wall)
@@ -73,5 +75,12 @@ public class Tile {
 
     public void addInhabitant(Entity newInhabitant) { this.inhabitants.add(newInhabitant); }
 
-    public void removeInhabitant(Entity entity) { this.inhabitants.remove(entity); }
+    public boolean removeThisInhabitant(Entity entity) { return this.inhabitants.remove(entity); }
+
+    /**
+     * Sort inhabitants based on their overlap resolution priority
+     */
+    public void sortInhabitants() {
+        Collections.sort(inhabitants);
+    }
 }

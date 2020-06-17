@@ -9,11 +9,13 @@ import ca.sfu.cmpt213.assignment2.model.Entity;
 public class Monster extends Entity {
 
     public static final String SYMBOL = "!";
+    public static final int PRIORITY = 3;
 
-    public Monster(int x, int y) {
-        super(x,y,SYMBOL);
+    public Monster(int x, int y, int id) {
+        super(x,y,id,SYMBOL,PRIORITY);
     }
 
+    @Override
     public void update() {
         // Needs Implementation
     }
