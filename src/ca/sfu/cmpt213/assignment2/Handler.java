@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 /**
  * Sets up text menu and gameplay environment.
- * Manages user inputs and handles them accordingly
+ * Manages user inputs and handles them accordingly.
  */
 
 public class Handler {
@@ -28,6 +28,10 @@ public class Handler {
      */
     ArrayList<Entity> entityList = new ArrayList<>();
 
+    /**
+     * Creates a game with level, populates level, and sets up control scheme.
+     * @param in The system input scanner.
+     */
     Handler(Scanner in) {
 
         // Set input scanner
@@ -64,6 +68,10 @@ public class Handler {
     */
 
     // User Interface Methods
+
+    /**
+     * Prints instructions for keyboard inputs.
+     */
     public static void helpMenu() {
         String output = "DIRECTIONS:\n" +
                 " Kill 3 Monsters!\n" +
@@ -80,6 +88,9 @@ public class Handler {
         System.out.println(output);
     }
 
+    /**
+     * Prints various in-game statistics.
+     */
     public void printStats() {
         System.out.println("Total number of monsters to be killed: " + MONSTER_COUNT);
         System.out.println("Number of powers currently in possession: " + this.hero.getPowerCount());
@@ -88,6 +99,9 @@ public class Handler {
         System.out.println("Number of monsters alive: " + survivorCount);
     }
 
+    /**
+     * Game loop.
+     */
     public void runGame() {
         boolean running = true;
         while (running) {
@@ -125,6 +139,13 @@ public class Handler {
     }
 
     // Entity Manipulation Methods
+
+    /**
+     * Generates a random ID for each entity so that they could be identified.
+     * individually in the entities list. The ID is always unique from existing IDs
+     * in the entities list.
+     * @return A random integer ID.
+     */
     private int generateID() {
         int randomID = 0;
         boolean isUnique = false;
@@ -141,12 +162,23 @@ public class Handler {
         return randomID;
     }
 
+    /**
+     * Spawns a defined entity based on their position field.
+     * @param entity The entity to be spawned.
+     * @return True if spawn is successful and false if spawn failed.
+     */
     private boolean spawnEntity(Entity entity) {
         boolean success = setEntity(entity,entity.getPosition());
         if (success) this.entityList.add(entity);
         return success;
     }
 
+    /**
+     * Sets an entity at a designated location.
+     * @param entity The entity to be set.
+     * @param newCoordinates Where the entity should be set on the level map.
+     * @return True if set is successful and false if set failed.
+     */
     private boolean setEntity(Entity entity, Coordinates newCoordinates) {
 
         // Define original and new coordinates
@@ -187,6 +219,11 @@ public class Handler {
         else return false;
     }
 
+    /**
+     * Moves an entity one unit towards any eight directions.
+     * @param entity The entity to be moved.
+     * @param direction Any of eight directions defined in the Directions enumerator
+     */
     private void moveEntity(Entity entity, Direction direction) {
 
             System.out.println("Moving " + direction);
@@ -218,6 +255,10 @@ public class Handler {
         return new Coordinates(newX,newY);
     }
 
+    /**
+     * Set eight tiles around an entity to visible.
+     * @param entity The entity from which vision is casted.
+     */
     private void revealTiles (Entity entity) {
 
         // Reveal tile that entity is standing on
@@ -231,6 +272,10 @@ public class Handler {
         }
     }
 
+    /**
+     * Determines the result of an entity overlap based on game rules
+     * @param tile The tile where the overlap occurs.
+     */
     private void resolveOverlap(Tile tile) {
 
         tile.sortInhabitants();
@@ -246,17 +291,18 @@ public class Handler {
            }
            else if (target.getSymbol().equals("!")) {
 
-               // deal damage to hero and check if dead
+               // Deal damage to hero and check if dead
                hero.setPowerCount(hero.getPowerCount() - 1);
                hero.update();
 
                if (hero.isAlive()) {
                    hero.setKillCount(hero.getKillCount() + 1);
 
-                   // removes monster from tile and cast into temporary storage
+                   // Removes monster from tile and cast into temporary storage
                    Monster targetMonster = ((Monster)subjects.remove(i));
 
-                   // removes monster from entityList based on id
+                   // Removes this specific monster from entityList based on id
+                   // This is so that its presence on handler is gone as well
                    Entity targetEntity = null;
                    for (Entity entity : this.entityList) {
                        if (entity.getId() == targetMonster.getId()) {
@@ -272,6 +318,9 @@ public class Handler {
         }
     }
 
+    /**
+     * Reveals all tiles and makes hero invincible.
+     */
     public void debug() {
 
         // Set all tiles to visible
