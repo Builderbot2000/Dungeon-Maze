@@ -9,6 +9,5 @@ public class Main {
         Handler handler = new Handler(inputScanner);
         handler.debug();
         handler.runGame();
-
     }
 }

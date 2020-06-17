@@ -35,9 +35,8 @@ public class Level {
         I was changing my code, I need to implement this logic //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
         The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
         I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
-
-        while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)/4)
-        {
+         */
+        while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)) {
             yIndex = currentTile.getCurrentPosition().getY();
             xIndex = currentTile.getCurrentPosition().getX();
             map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX()].setVisited(true);
@@ -46,23 +45,23 @@ public class Level {
 
             //creating a set of unvisited neighbours
             // North neighbour
-            if (yIndex - 1 > 1) {
+            if (yIndex - 1 >= 1) {
                 if (!map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].getVisited()) //Northern neighbour unvisited
                     neighbours.add(0);
             }
             //Southern neighbour
-            if (!(yIndex + 1 > CHAMBER_HEIGHT)) { //y index if increased is not greater than height of the chamber
+            if (!(yIndex + 1 >= CHAMBER_HEIGHT)) { //y index if increased is not greater than height of the chamber
                 if (!map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].getVisited()) //Northern neighbour unvisited
                     neighbours.add(1);
             }
             //Eastern neighbour
-            if (!(xIndex + 1 >= CHAMBER_WIDTH)) {
-                if (!map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].getVisited()) {
+            if (!(xIndex + 1 >= CHAMBER_WIDTH)) { //check edge case
+                if (!map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].getVisited()) { //check if visited
                     neighbours.add(2);
                 }
             }
             //Western neighbour
-            if (xIndex - 1 > 1) {
+            if (xIndex - 1 >= 1) {
                 if (!map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].getVisited()) {
                     neighbours.add(3);
                 }
@@ -80,22 +79,22 @@ public class Level {
                 //knock down wall
                 switch (myDirection) {
                     case 0 -> {
-                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.EMPTY);
+                        map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY() - 1][currentTile.getCurrentPosition().getX()];
                     }
                     case 1 -> {
-                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.EMPTY);
+                        map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY() + 1][currentTile.getCurrentPosition().getX()];
                     }
                     case 2 -> {
-                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Terrain.EMPTY);
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() + 1];
                     }
                     case 3 -> {
-                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Terrain.EMPTY);
+                        map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1]); //push northern neighbour
                         currentTile = map[currentTile.getCurrentPosition().getY()][currentTile.getCurrentPosition().getX() - 1];
                     }
@@ -118,7 +117,7 @@ public class Level {
         }
 
         // Fill sides with walls
-        for (Tile[] tiles: map) {
+        for (Tile[] tiles : map) {
             tiles[0].setTerrain(Terrain.WALL);
             tiles[0].setVisible(true);
             tiles[MAP_WIDTH - 1].setTerrain(Terrain.WALL);
@@ -141,12 +140,11 @@ public class Level {
             }
             CurrentY ++;
         }
-
+        
         /*
         filling in the entire matrix with walls where in which I can break them down
 
-        for (int y = 0; y < MAP_HEIGHT; y++) {
-            for (int x = 0; x < MAP_WIDTH; x++) {
+
                 if (y == 0) { //make walls surrounding chamber visible
                     map[y][x].setVisible(true);
                     map[y][x].setVisited(true);
@@ -161,14 +159,16 @@ public class Level {
                     map[y][x].setVisited(false);
                 }
                 map[y][x].setTerrain(Terrain.WALL); // fill everywhere with walls
-                map[y][x].setCurrentPosition(new Coordinate(x, y)); //get all coordinates
+
             }
         }
+
+
+         */
         numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         map[1][1].setVisited(true);
         mapStack.push(map[1][1]); //Chamber start position
-         */
-        // initializeChamber(map[1][1]); //Chamber start position
+        initializeChamber(map[1][1]); //Chamber start position
     }
 
     public Tile[][] getMap() {
