@@ -1,7 +1,5 @@
 package ca.sfu.cmpt213.assignment2.model.entities;
 
-import ca.sfu.cmpt213.assignment2.model.Entity;
-
 /**
  * Hero class that is the player with fields kill count and powerCount.
  * Other fields and methods inherited from Entity

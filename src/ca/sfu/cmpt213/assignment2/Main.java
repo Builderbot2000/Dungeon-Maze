@@ -8,7 +8,7 @@ public class Main {
         Scanner inputScanner = new Scanner(System.in);
         Handler handler = new Handler(inputScanner);
         handler.debug();
-        handler.setUpUI();
+        handler.runGame();
 
     }
 }

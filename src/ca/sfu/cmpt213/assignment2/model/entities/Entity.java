@@ -1,4 +1,6 @@
-package ca.sfu.cmpt213.assignment2.model;
+package ca.sfu.cmpt213.assignment2.model.entities;
+
+import ca.sfu.cmpt213.assignment2.model.Coordinates;
 
 /**
  * Abstract Entity class parent of Hero and Monster.

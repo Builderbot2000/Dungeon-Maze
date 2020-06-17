@@ -1,7 +1,7 @@
 package ca.sfu.cmpt213.assignment2;
 
 import ca.sfu.cmpt213.assignment2.model.*;
-import ca.sfu.cmpt213.assignment2.model.Entity;
+import ca.sfu.cmpt213.assignment2.model.entities.Entity;
 import ca.sfu.cmpt213.assignment2.model.entities.Hero;
 import ca.sfu.cmpt213.assignment2.model.entities.Monster;
 import ca.sfu.cmpt213.assignment2.model.entities.Power;
@@ -87,14 +87,17 @@ public class Handler {
         System.out.println("Number of monsters alive: " + survivorCount);
     }
 
-    public void setUpUI() {
+    public void runGame() {
         boolean running = true;
         while (running) {
+
+            // Print level and stats, open console for entry
             System.out.println(this.level.toString());
             this.printStats();
             System.out.println("Enter your move - [W|A|S|D] or [Q|H]:");
             String entry = scanner.nextLine();
 
+            // Moves hero based on entry and terminates if dead
             switch (entry) {
                 case "W" -> moveEntity(hero,Direction.NORTH);
                 case "A" -> moveEntity(hero,Direction.WEST);
@@ -109,6 +112,14 @@ public class Handler {
             }
             revealTiles(hero);
             running = hero.isAlive();
+
+            // Move monsters according to directions given by AI
+            for (int i = 1; i < this.entityList.size(); i++) {
+                if (entityList.get(i).getSymbol().equals("!")) {
+                    Monster currentMonster = ((Monster)entityList.get(i));
+                    moveEntity(currentMonster,currentMonster.getAIDirection(level.getMap().clone()));
+                }
+            }
         }
     }
 
@@ -119,7 +130,7 @@ public class Handler {
         while (!isUnique) {
             randomID = new Random().nextInt();
             isUnique = true;
-            for (Entity entity : entityList) {
+            for (Entity entity : this.entityList) {
                 if (randomID == entity.getId()) {
                     isUnique = false;
                     break;
@@ -131,7 +142,7 @@ public class Handler {
 
     private boolean spawnEntity(Entity entity) {
         boolean success = setEntity(entity,entity.getPosition());
-        if (success) entityList.add(entity);
+        if (success) this.entityList.add(entity);
         return success;
     }
 
@@ -154,11 +165,18 @@ public class Handler {
             targetTile.update(true,false);
 
             // Reveal tiles if entity is hero
-            if (entity.getSymbol().equals("@")) revealTiles(entity);
+            if (entity.getSymbol().equals("@")) {
+                revealTiles(entity);
 
-            // Trigger overlap resolution
-            if (targetTile.getInhabitants().size() > 1) {
-                resolveOverlap(targetTile);
+                // Trigger overlap resolution
+                if (targetTile.getInhabitants().size() > 1) {
+                    resolveOverlap(targetTile);
+                }
+            }
+
+            // Remember path if entity is monster
+            if (entity.getSymbol().equals("!")) {
+                ((Monster)entity).setPreviousLocation(new Coordinates(originalX,originalY));
             }
 
             return true;
@@ -168,10 +186,10 @@ public class Handler {
 
     private void moveEntity(Entity entity, Direction direction) {
 
-        System.out.println("Moving " + direction);
-        if (!setEntity(entity,locateDirection(entity,direction)) && entity.getSymbol().equals("@")) {
-            System.out.println("You can't pass through walls!");
-        }
+            System.out.println("Moving " + direction);
+            if (!setEntity(entity,locateDirection(entity,direction)) && entity.getSymbol().equals("@")) {
+                System.out.println("You can't pass through walls!");
+            }
     }
 
     /**
@@ -180,7 +198,7 @@ public class Handler {
      * @param direction the direction to be detected
      * @return coordinates of the detected direction
      */
-    private static Coordinates locateDirection (Entity entity, Direction direction) {
+    public static Coordinates locateDirection(Entity entity, Direction direction) {
 
         int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
         int newX = originalX, newY = originalY;

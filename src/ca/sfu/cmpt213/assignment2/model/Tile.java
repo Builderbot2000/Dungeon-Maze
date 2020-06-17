@@ -1,8 +1,9 @@
 package ca.sfu.cmpt213.assignment2.model;
 
+import ca.sfu.cmpt213.assignment2.model.entities.Entity;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Stores information in regards to what the an individual tile holds (Monster,Hero,empty,wall)
@@ -10,7 +11,7 @@ import java.util.Comparator;
 
 public class Tile {
 
-    private Coordinates currentPosition;
+    private Coordinates position;
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
     private ArrayList<Entity> inhabitants = new ArrayList<>(); // this doesn't need to be an arraylist?
@@ -23,12 +24,12 @@ public class Tile {
     }
 
     // Getters and Setters
-    public Coordinates getCurrentPosition() {
-        return currentPosition;
+    public Coordinates getPosition() {
+        return position;
     }
 
-    public void setCurrentPosition(Coordinates currentPosition) {
-        this.currentPosition = currentPosition;
+    public void setPosition(Coordinates position) {
+        this.position = position;
     }
 
     public Boolean getVisited() {

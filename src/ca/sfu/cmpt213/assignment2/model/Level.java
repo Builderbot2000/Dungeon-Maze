@@ -1,8 +1,5 @@
 package ca.sfu.cmpt213.assignment2.model;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -139,7 +136,7 @@ public class Level {
         for (Tile[] tiles : map) {
             int CurrentX = 0;
             for (Tile tile : tiles) {
-                tile.setCurrentPosition(new Coordinates(CurrentX,CurrentY));
+                tile.setPosition(new Coordinates(CurrentX,CurrentY));
                 CurrentX ++;
             }
             CurrentY ++;
