@@ -30,9 +30,11 @@ public class Hero extends Entity{
     }
 
     public void setPowerCount(int powerCount) {
+
         this.powerCount = powerCount;
     }
 
     @Override
-    public void update() { if (powerCount < 0) this.setAlive(false); }
+    public void update() {
+        if (powerCount < 0) this.setAlive(false); }
 }

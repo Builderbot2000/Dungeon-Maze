@@ -44,8 +44,7 @@ public class Tile {
         return this.terrain;
     }
 
-    public void setTerrain(Terrain terrain)
-    {
+    public void setTerrain(Terrain terrain) {
         this.terrain = terrain;
     }
 
@@ -57,9 +56,13 @@ public class Tile {
         this.isVisible = visible;
     }
 
-    public Boolean getIsInhabited() { return isInhabited; }
+    public Boolean getIsInhabited() {
+        return isInhabited;
+    }
 
-    public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
+    public void setIsInhabited(Boolean inhabited) {
+        isInhabited = inhabited;
+    }
 
     public void updateTile(boolean flag1, boolean flag2) {
 
@@ -74,9 +77,13 @@ public class Tile {
         return this.inhabitants;
     }
 
-    public void addInhabitant(Entity newInhabitant) { this.inhabitants.add(newInhabitant); }
+    public void addInhabitant(Entity newInhabitant) {
+        this.inhabitants.add(newInhabitant);
+    }
 
-    public boolean removeThisInhabitant(Entity entity) { return this.inhabitants.remove(entity); }
+    public boolean removeThisInhabitant(Entity entity) {
+        return this.inhabitants.remove(entity);
+    }
 
     /**
      * Sort inhabitants based on their overlap resolution priority

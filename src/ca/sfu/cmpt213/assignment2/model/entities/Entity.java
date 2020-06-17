@@ -5,7 +5,7 @@ import ca.sfu.cmpt213.assignment2.model.Coordinates;
 /**
  * Abstract Entity class parent of Hero and Monster.
  */
-public abstract class Entity implements Comparable<Entity>{
+public abstract class Entity implements Comparable<Entity> {
 
     private boolean isAlive;
     private Coordinates position;
@@ -18,7 +18,7 @@ public abstract class Entity implements Comparable<Entity>{
         this.priority = priority;
         this.id = id;
         this.setAlive(true);
-        this.setPosition(new Coordinates(x,y));
+        this.setPosition(new Coordinates(x, y));
     }
 
     // Getters and Setters
@@ -38,13 +38,20 @@ public abstract class Entity implements Comparable<Entity>{
         this.position = position;
     }
 
-    public String getSymbol () { return symbol; }
+    public String getSymbol() {
+        return symbol;
+    }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public void update() {}
+    public void update() {
+    }
 
     @Override
     public int compareTo(Entity o) {
