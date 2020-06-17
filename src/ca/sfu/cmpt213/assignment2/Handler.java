@@ -1,7 +1,7 @@
 package ca.sfu.cmpt213.assignment2;
 
 import ca.sfu.cmpt213.assignment2.model.*;
-import ca.sfu.cmpt213.assignment2.model.Entity;
+import ca.sfu.cmpt213.assignment2.model.entities.Entity;
 import ca.sfu.cmpt213.assignment2.model.entities.Hero;
 import ca.sfu.cmpt213.assignment2.model.entities.Monster;
 import ca.sfu.cmpt213.assignment2.model.entities.Power;
@@ -17,9 +17,9 @@ import java.util.Scanner;
 
 public class Handler {
 
-    private Scanner scanner;
-    private Level level;
-    private Hero hero;
+    private final Scanner scanner;
+    private final Level level;
+    private final Hero hero;
     private static final int MONSTER_COUNT = 3;
     private static final int POWER_COUNT = 3;
 
@@ -37,13 +37,13 @@ public class Handler {
         this.level = new Level();
 
         // Spawn hero
-        this.hero = new Hero(1,1);
+        this.hero = new Hero(1,1,generateID());
         spawnEntity(hero);
 
         // Spawn three monsters
-        spawnEntity(new Monster(Level.MAP_WIDTH - 2,1));
-        spawnEntity(new Monster(1,Level.MAP_HEIGHT - 2));
-        spawnEntity(new Monster(Level.MAP_WIDTH - 2,Level.MAP_HEIGHT - 2));
+        spawnEntity(new Monster(Level.MAP_WIDTH - 2,1,generateID()));
+        spawnEntity(new Monster(1,Level.MAP_HEIGHT - 2,generateID()));
+        spawnEntity(new Monster(Level.MAP_WIDTH - 2,Level.MAP_HEIGHT - 2,generateID()));
 
         // Spawn powers in random locations, keep trying until POWER_COUNT powers have been
         // successfully spawned
@@ -51,7 +51,7 @@ public class Handler {
         while (placementSuccess < POWER_COUNT) {
             int randomX = new Random().nextInt((Level.MAP_WIDTH - 3) - 3) + 3;
             int randomY = new Random().nextInt((Level.MAP_HEIGHT - 3) - 3) + 3;
-            if (spawnEntity(new Power(randomX,randomY))) placementSuccess ++;
+            if (spawnEntity(new Power(randomX,randomY,generateID()))) placementSuccess ++;
         }
 
         // Initialize help menu
@@ -87,14 +87,17 @@ public class Handler {
         System.out.println("Number of monsters alive: " + survivorCount);
     }
 
-    public void setUpUI() {
+    public void runGame() {
         boolean running = true;
         while (running) {
+
+            // Print level and stats, open console for entry
             System.out.println(this.level.toString());
             this.printStats();
             System.out.println("Enter your move - [W|A|S|D] or [Q|H]:");
             String entry = scanner.nextLine();
 
+            // Moves hero based on entry and terminates if dead
             switch (entry) {
                 case "W" -> moveEntity(hero,Direction.NORTH);
                 case "A" -> moveEntity(hero,Direction.WEST);
@@ -109,13 +112,37 @@ public class Handler {
             }
             revealTiles(hero);
             running = hero.isAlive();
+
+            // Move monsters according to directions given by AI
+            for (int i = 1; i < this.entityList.size(); i++) {
+                if (entityList.get(i).getSymbol().equals("!")) {
+                    Monster currentMonster = ((Monster)entityList.get(i));
+                    moveEntity(currentMonster,currentMonster.getAIDirection(level.getMap().clone()));
+                }
+            }
         }
     }
 
     // Entity Manipulation Methods
+    private int generateID() {
+        int randomID = 0;
+        boolean isUnique = false;
+        while (!isUnique) {
+            randomID = new Random().nextInt();
+            isUnique = true;
+            for (Entity entity : this.entityList) {
+                if (randomID == entity.getId()) {
+                    isUnique = false;
+                    break;
+                }
+            }
+        }
+        return randomID;
+    }
+
     private boolean spawnEntity(Entity entity) {
         boolean success = setEntity(entity,entity.getPosition());
-        if (success) entityList.add(entity);
+        if (success) this.entityList.add(entity);
         return success;
     }
 
@@ -132,17 +159,26 @@ public class Handler {
 
             // Tile transition procedures
             entity.setPosition(newCoordinates);
-            originalTile.removeInhabitant(entity);
-            originalTile.updateTile(true,false);
+
+            originalTile.removeThisInhabitant(entity);
+            originalTile.update(true,false);
+
             targetTile.addInhabitant(entity);
             targetTile.updateTile(true,false);
 
             // Reveal tiles if entity is hero
-            if (entity.symbol.equals("@")) revealTiles(entity);
+            if (entity.getSymbol().equals("@")) {
+                revealTiles(entity);
 
-            // Trigger overlap resolution
-            if (targetTile.getInhabitants().size() > 1) {
-                resolveOverlap(targetTile.getInhabitants());
+                // Trigger overlap resolution
+                if (targetTile.getInhabitants().size() > 1) {
+                    resolveOverlap(targetTile);
+                }
+            }
+
+            // Remember path if entity is monster
+            if (entity.getSymbol().equals("!")) {
+                ((Monster)entity).setPreviousLocation(new Coordinates(originalX,originalY));
             }
 
             return true;
@@ -152,10 +188,10 @@ public class Handler {
 
     private void moveEntity(Entity entity, Direction direction) {
 
-        System.out.println("Moving " + direction);
-        if (!setEntity(entity,locateDirection(entity,direction)) && entity.symbol.equals("@")) {
-            System.out.println("You can't pass through walls!");
-        }
+            System.out.println("Moving " + direction);
+            if (!setEntity(entity,locateDirection(entity,direction)) && entity.getSymbol().equals("@")) {
+                System.out.println("You can't pass through walls!");
+            }
     }
 
     /**
@@ -164,7 +200,7 @@ public class Handler {
      * @param direction the direction to be detected
      * @return coordinates of the detected direction
      */
-    private static Coordinates locateDirection (Entity entity, Direction direction) {
+    public static Coordinates locateDirection(Entity entity, Direction direction) {
 
         int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
         int newX = originalX, newY = originalY;
@@ -194,8 +230,45 @@ public class Handler {
         }
     }
 
-    private static void resolveOverlap(ArrayList<Entity> entityList) {
-        System.out.println("Resolve Overlap!");
+    private void resolveOverlap(Tile tile) {
+
+        tile.sortInhabitants();
+        ArrayList<Entity> subjects = tile.getInhabitants();
+        Hero hero = ((Hero)subjects.get(0));
+
+        for (int i = 1; i < subjects.size(); i++) {
+           Entity target = subjects.get(i);
+           if (target.getSymbol().equals("$")) {
+               hero.setPowerCount(hero.getPowerCount() + 1);
+               //noinspection SuspiciousListRemoveInLoop
+               subjects.remove(i);
+           }
+           else if (target.getSymbol().equals("!")) {
+
+               // deal damage to hero and check if dead
+               hero.setPowerCount(hero.getPowerCount() - 1);
+               hero.update();
+
+               if (hero.isAlive()) {
+                   hero.setKillCount(hero.getKillCount() + 1);
+
+                   // removes monster from tile and cast into temporary storage
+                   Monster targetMonster = ((Monster)subjects.remove(i));
+
+                   // removes monster from entityList based on id
+                   Entity targetEntity = null;
+                   for (Entity entity : this.entityList) {
+                       if (entity.getId() == targetMonster.getId()) {
+                           targetEntity = entity;
+                       }
+                   }
+                   this.entityList.remove(targetEntity);
+                   System.out.println("A monster is killed.");
+               }
+               else System.out.println("You perished in battle.");
+           }
+           else System.out.println("Entity not recognized!");
+        }
     }
 
     public void debug() {
