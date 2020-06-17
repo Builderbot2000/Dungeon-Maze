@@ -83,13 +83,22 @@ public class Handler {
     public void printStats() {
         System.out.println("Total number of monsters to be killed: " + MONSTER_COUNT);
         System.out.println("Number of powers currently in possession: " + this.hero.getPowerCount());
-        int survivorCount = this.entityList.size() - 1;
+        int survivorCount = 0;
+        for (Entity entity: entityList) { if (entity.getSymbol().equals("!")) survivorCount ++; }
         System.out.println("Number of monsters alive: " + survivorCount);
     }
 
     public void runGame() {
         boolean running = true;
         while (running) {
+
+            // Move monsters according to directions given by AI
+            for (int i = 1; i < this.entityList.size(); i++) {
+                if (entityList.get(i).getSymbol().equals("!")) {
+                    Monster currentMonster = ((Monster)entityList.get(i));
+                    moveEntity(currentMonster,currentMonster.getAIDirection(level.getMap().clone()));
+                }
+            }
 
             // Print level and stats, open console for entry
             System.out.println(this.level.toString());
@@ -112,14 +121,6 @@ public class Handler {
             }
             revealTiles(hero);
             running = hero.isAlive();
-
-            // Move monsters according to directions given by AI
-            for (int i = 1; i < this.entityList.size(); i++) {
-                if (entityList.get(i).getSymbol().equals("!")) {
-                    Monster currentMonster = ((Monster)entityList.get(i));
-                    moveEntity(currentMonster,currentMonster.getAIDirection(level.getMap().clone()));
-                }
-            }
         }
     }
 
