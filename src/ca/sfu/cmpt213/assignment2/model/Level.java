@@ -7,7 +7,7 @@ import java.util.Stack;
 /**
  * Creates the map where in which gameplay will take place
  */
-
+//some local changes
 public class Level {
 
     public static final int MAP_WIDTH = 20, MAP_HEIGHT = 15, CHAMBER_WIDTH = 19, CHAMBER_HEIGHT = 14;
