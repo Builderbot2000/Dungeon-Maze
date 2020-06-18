@@ -123,23 +123,23 @@ public class Level {
     void initializeChamber(Tile currentMap, int prevValue) {
         int y = currentMap.getPosition().getY();
         int x = currentMap.getPosition().getX();
-        map[(2 * y) + 1][(2 * x) + 1].setTerrain(Terrain.EMPTY);
+        map[(2*y) + 1][(2*x) + 1].setTerrain(Terrain.EMPTY);
 
-        if (currentMap.pathDirection[0] && prevValue != 1) {
-            map[(2 * y)][(2 * x) + 1].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y - 1][x], 0);
+        if(currentMap.pathDirection[0] && prevValue != 1){
+            map[(2*y)][(2*x) + 1].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y-1][x],0);
         }
-        if (currentMap.pathDirection[1] && prevValue != 0) {
-            map[(2 * y) + 2][(2 * x) + 1].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y + 1][x], 1);
+        if(currentMap.pathDirection[1] && prevValue != 0){
+            map[(2*y) + 2][(2*x) + 1].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y+1][x],1);
         }
-        if (currentMap.pathDirection[2] && prevValue != 3) {
-            map[(2 * y) + 1][(2 * x) + 2].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y][x + 1], 2);
+        if(currentMap.pathDirection[2] && prevValue != 3){
+            map[(2*y) + 1][(2*x) + 2].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y][x+1],2);
         }
-        if (currentMap.pathDirection[3] && prevValue != 2) {
-            map[(2 * y) + 1][(2 * x)].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y][x - 1], 3);
+        if(currentMap.pathDirection[3] && prevValue != 2){
+            map[(2*y) + 1][(2*x)].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y][x - 1],3);
         }
 
     }
