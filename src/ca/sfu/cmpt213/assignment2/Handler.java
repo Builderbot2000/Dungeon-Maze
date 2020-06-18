@@ -26,7 +26,7 @@ public class Handler {
     /**
      * The entityList hosts the hero at index 0 and the three monsters at index 1,2,3 respectively.
      */
-    ArrayList<Entity> entityList = new ArrayList<>();
+    ArrayList<Entity> entityList = new ArrayList<>(); //also holds the powers
 
     /**
      * Creates a game with level, populates level, and sets up control scheme.
@@ -95,7 +95,9 @@ public class Handler {
         System.out.println("Total number of monsters to be killed: " + MONSTER_COUNT);
         System.out.println("Number of powers currently in possession: " + this.hero.getPowerCount());
         int survivorCount = 0;
-        for (Entity entity: entityList) { if (entity.getSymbol().equals("!")) survivorCount ++; }
+        for (Entity entity: entityList) {
+            if (entity.getSymbol().equals("!")) survivorCount ++;
+        }
         System.out.println("Number of monsters alive: " + survivorCount);
     }
 

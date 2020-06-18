@@ -14,13 +14,18 @@ public class Tile {
     private Coordinates position;
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
-    private ArrayList<Entity> inhabitants = new ArrayList<>(); // this doesn't need to be an arraylist?
-    private Boolean[] pathDirection = new Boolean[4];
+    private ArrayList<Entity> inhabitants = new ArrayList<>();
+    public Boolean[] pathDirection;
 
     public Tile() {
         terrain = Terrain.EMPTY;
         isVisible = false;
         isInhabited = false;
+        isVisited = false;
+        pathDirection = new Boolean[4];
+        for(int i = 0; i < 4; i++)
+            pathDirection[i] = false;
+
     }
 
     // Getters and Setters
@@ -37,29 +42,39 @@ public class Tile {
     }
 
     public void setVisited(Boolean visited) {
+
         this.isVisited = visited;
     }
 
     public Terrain getTerrain() {
+
         return this.terrain;
     }
 
-    public void setTerrain(Terrain terrain)
-    {
+    public void setTerrain(Terrain terrain) {
+
         this.terrain = terrain;
     }
 
     public Boolean getVisible() {
+
         return this.isVisible;
     }
 
-    public void setVisible(Boolean visible) {
+    public void setVisible(Boolean visible)
+    {
         this.isVisible = visible;
     }
 
-    public Boolean getIsInhabited() { return isInhabited; }
+    public Boolean getIsInhabited()
+    {
+        return isInhabited;
+    }
 
-    public void setIsInhabited(Boolean inhabited) { isInhabited = inhabited; }
+    public void setIsInhabited(Boolean inhabited)
+    {
+        isInhabited = inhabited;
+    }
 
     public void updateTile(boolean flag1, boolean flag2) {
 
@@ -71,17 +86,25 @@ public class Tile {
     }
 
     public ArrayList<Entity> getInhabitants() {
+
         return this.inhabitants;
     }
 
-    public void addInhabitant(Entity newInhabitant) { this.inhabitants.add(newInhabitant); }
+    public void addInhabitant(Entity newInhabitant) {
 
-    public boolean removeThisInhabitant(Entity entity) { return this.inhabitants.remove(entity); }
+        this.inhabitants.add(newInhabitant);
+    }
+
+    public boolean removeThisInhabitant(Entity entity) {
+
+        return this.inhabitants.remove(entity);
+    }
 
     /**
      * Sort inhabitants based on their overlap resolution priority
      */
     public void sortInhabitants() {
+
         Collections.sort(inhabitants);
     }
 }
