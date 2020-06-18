@@ -40,7 +40,7 @@ public class Level {
         int yIndex;
         int xIndex;
 
-        while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)) {
+        while (numberOfCellsVisited < ((CHAMBER_WIDTH - 1) * (CHAMBER_HEIGHT - 1))) {
             yIndex = currentTile.getPosition().getY();
             xIndex = currentTile.getPosition().getX();
             System.out.println("y index" + yIndex);
@@ -93,17 +93,17 @@ public class Level {
                     }
                     case 1 -> { //South
                         map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()].setTerrain(Terrain.WALL);
-                        mapStack.push(map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()]); //push northern neighbour
+                        mapStack.push(map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()]); //push southern neighbour
                         currentTile = map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()];
                     }
                     case 2 -> { //East
                         map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1].setTerrain(Terrain.WALL);
-                        mapStack.push(map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1]); //push northern neighbour
+                        mapStack.push(map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1]); //push western neighbour
                         currentTile = map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1];
                     }
                     case 3 -> { //West
                         map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1].setTerrain(Terrain.WALL);
-                        mapStack.push(map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1]); //push northern neighbour
+                        mapStack.push(map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1]); //push eastern neighbour
                         currentTile = map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1];
                     }
                 }
