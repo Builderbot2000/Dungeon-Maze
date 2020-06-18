@@ -21,6 +21,7 @@ public class Tile {
         terrain = Terrain.EMPTY;
         isVisible = false;
         isInhabited = false;
+        isVisited = false;
     }
 
     // Getters and Setters

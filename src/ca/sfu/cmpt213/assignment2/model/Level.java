@@ -12,8 +12,8 @@ public class Level {
 
     public static final int MAP_WIDTH = 15, MAP_HEIGHT = 20, CHAMBER_WIDTH = 14, CHAMBER_HEIGHT = 19;
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
-    private static int numberOfCellsVisited;
-    private static final Stack<Tile> mapStack = new Stack<>();
+    private int numberOfCellsVisited;
+    private Stack<Tile> mapStack = new Stack<>();
     // private final Tile[][] tempMap = new Tile[CHAMBER_HEIGHT/2][CHAMBER_WIDTH/2]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
 
     /**
@@ -43,6 +43,8 @@ public class Level {
         while (numberOfCellsVisited < (CHAMBER_WIDTH * CHAMBER_HEIGHT)) {
             yIndex = currentTile.getPosition().getY();
             xIndex = currentTile.getPosition().getX();
+            System.out.println("y index" + yIndex);
+            System.out.println("x index" + xIndex);
             map[currentTile.getPosition().getY()][currentTile.getPosition().getX()].setVisited(true);
 
             ArrayList<Integer> neighbours = new ArrayList<>();
@@ -52,14 +54,16 @@ public class Level {
             if (yIndex - 1 >= 1) {
                 if (!map[currentTile.getPosition().getY() - 1][currentTile.getPosition().getX()].getVisited()) //Northern neighbour unvisited
                     neighbours.add(0);
+
+
             }
             //Southern neighbour
-            if (!(yIndex + 1 >= CHAMBER_HEIGHT)) { //y index if increased is not greater than height of the chamber
+            if (yIndex + 1 < CHAMBER_HEIGHT) { //y index if increased is not greater than height of the chamber
                 if (!map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()].getVisited()) //Northern neighbour unvisited
                     neighbours.add(1);
             }
             //Eastern neighbour
-            if (!(xIndex + 1 >= CHAMBER_WIDTH)) { //check edge case
+            if (xIndex + 1 < CHAMBER_WIDTH) { //check edge case
                 if (!map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1].getVisited()) { //check if visited
                     neighbours.add(2);
                 }
@@ -82,30 +86,34 @@ public class Level {
                 } while (!randomizer);
                 //knock down wall
                 switch (myDirection) {
-                    case 0 -> {
+                    case 0 -> { //North
                         map[currentTile.getPosition().getY() - 1][currentTile.getPosition().getX()].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getPosition().getY() - 1][currentTile.getPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getPosition().getY() - 1][currentTile.getPosition().getX()];
                     }
-                    case 1 -> {
+                    case 1 -> { //South
                         map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()]); //push northern neighbour
                         currentTile = map[currentTile.getPosition().getY() + 1][currentTile.getPosition().getX()];
                     }
-                    case 2 -> {
+                    case 2 -> { //East
                         map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1]); //push northern neighbour
                         currentTile = map[currentTile.getPosition().getY()][currentTile.getPosition().getX() + 1];
                     }
-                    case 3 -> {
+                    case 3 -> { //West
                         map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1].setTerrain(Terrain.WALL);
                         mapStack.push(map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1]); //push northern neighbour
                         currentTile = map[currentTile.getPosition().getY()][currentTile.getPosition().getX() - 1];
                     }
                 }
                 numberOfCellsVisited++;
+                System.out.println(numberOfCellsVisited + " is the number of cells visited");
             } else {
+
                 currentTile = mapStack.pop(); //backtrack
+
+
             }
         }
     }
@@ -140,6 +148,7 @@ public class Level {
             int CurrentX = 0;
             for (Tile tile : tiles) {
                 tile.setPosition(new Coordinates(CurrentX,CurrentY));
+
                 CurrentX ++;
             }
             CurrentY ++;
@@ -169,8 +178,8 @@ public class Level {
 
 
          */
-        numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         map[1][1].setVisited(true);
+        numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         mapStack.push(map[1][1]); //Chamber start position
         initializeChamber(map[1][1]); //Chamber start position
     }
