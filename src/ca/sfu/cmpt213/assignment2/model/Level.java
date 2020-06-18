@@ -7,10 +7,10 @@ import java.util.Stack;
 /**
  * Creates the map where in which gameplay will take place
  */
-
+//some local changes
 public class Level {
 
-    public static final int MAP_WIDTH = 15, MAP_HEIGHT = 20, CHAMBER_WIDTH = 14, CHAMBER_HEIGHT = 19;
+    public static final int MAP_WIDTH = 20, MAP_HEIGHT = 15, CHAMBER_WIDTH = 19, CHAMBER_HEIGHT = 14;
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private int numberOfCellsVisited;
     private Stack<Tile> mapStack = new Stack<>();
@@ -43,7 +43,7 @@ public class Level {
         int yIndex;
         int xIndex;
 
-        while (numberOfCellsVisited < ((CHAMBER_WIDTH - 1) / 2 * (CHAMBER_HEIGHT - 1) / 2)) {
+        while (numberOfCellsVisited < (((CHAMBER_WIDTH-1) * (CHAMBER_HEIGHT)) / 4)) {
             yIndex = currentTile.getPosition().getY();
             xIndex = currentTile.getPosition().getX();
             System.out.println("y index" + yIndex);
@@ -113,6 +113,7 @@ public class Level {
                 numberOfCellsVisited++;
                 System.out.println(numberOfCellsVisited + " is the number of cells visited");
             } else {
+
                 currentTile = mapStack.pop(); //backtrack
             }
         }
@@ -120,26 +121,26 @@ public class Level {
         initializeChamber(tempMap[0][0], -1);
     }
 
-    void initializeChamber(Tile currentMap, int prevValue) {
+    void initializeChamber(Tile currentMap, int prevDirection) {
         int y = currentMap.getPosition().getY();
         int x = currentMap.getPosition().getX();
-        map[(2*y) + 1][(2*x) + 1].setTerrain(Terrain.EMPTY);
 
-        if(currentMap.pathDirection[0] && prevValue != 1){
-            map[(2*y)][(2*x) + 1].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y-1][x],0);
+        map[(2 * y) + 1][(2 * x) + 1].setTerrain(Terrain.EMPTY);
+        if (currentMap.pathDirection[0] && prevDirection != 1) {
+            map[(2 * y)][(2 * x) + 1].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y - 1][x], 0);
         }
-        if(currentMap.pathDirection[1] && prevValue != 0){
-            map[(2*y) + 2][(2*x) + 1].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y+1][x],1);
+        if (currentMap.pathDirection[1] && prevDirection != 0) {
+            map[(2 * y) + 2][(2 * x) + 1].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y + 1][x], 1);
         }
-        if(currentMap.pathDirection[2] && prevValue != 3){
-            map[(2*y) + 1][(2*x) + 2].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y][x+1],2);
+        if (currentMap.pathDirection[2] && prevDirection != 3) {
+            map[(2 * y) + 1][(2 * x) + 2].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y][x + 1], 2);
         }
-        if(currentMap.pathDirection[3] && prevValue != 2){
-            map[(2*y) + 1][(2*x)].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y][x - 1],3);
+        if (currentMap.pathDirection[3] && prevDirection != 2) {
+            map[(2 * y) + 1][(2 * x)].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y][x - 1], 3);
         }
 
     }
