@@ -15,7 +15,7 @@ public class Tile {
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
     private ArrayList<Entity> inhabitants = new ArrayList<>();
-    private Boolean[] pathDirection = new Boolean[4];
+    public Boolean[] pathDirection = new Boolean[4];
 
     public Tile() {
         terrain = Terrain.EMPTY;
