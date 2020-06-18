@@ -15,13 +15,17 @@ public class Tile {
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
     private ArrayList<Entity> inhabitants = new ArrayList<>();
-    public Boolean[] pathDirection = new Boolean[4];
+    public Boolean[] pathDirection;
 
     public Tile() {
         terrain = Terrain.EMPTY;
         isVisible = false;
         isInhabited = false;
         isVisited = false;
+        pathDirection = new Boolean[4];
+        for(int i = 0; i < 4; i++)
+            pathDirection[i] = false;
+
     }
 
     // Getters and Setters

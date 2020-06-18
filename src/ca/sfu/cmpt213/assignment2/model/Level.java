@@ -34,9 +34,8 @@ public class Level {
         createChamber();
     }
 
-    private void initializeTempMap(Tile currentTile) { /*
-
-
+    private void initializeTempMap(Tile currentTile) {
+        /*
         I was changing my code, I need to implement this logic //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
         The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
         I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
@@ -118,27 +117,29 @@ public class Level {
             }
         }
 
-        initializeChamber();
+        initializeChamber(tempMap[0][0], -1);
     }
-    void initializeChamber(){
 
-        for (int y = 0; y < CHAMBER_HEIGHT / 2; y++) {
-            for (int x = 0; x < CHAMBER_WIDTH / 2; x++) {
-                for(int boolIndex = 0; boolIndex < 4; boolIndex++) {
-                    if (tempMap[y][x].pathDirection[boolIndex]) {
-                        map[(2 * y) + 1][(2 * x) + 1].setTerrain(Terrain.EMPTY);
-                        System.out.println("emptyExecution");
-                    }
+    void initializeChamber(Tile currentMap, int prevValue) {
+        int y = currentMap.getPosition().getY();
+        int x = currentMap.getPosition().getX();
+        map[(2 * y) + 1][(2 * x) + 1].setTerrain(Terrain.EMPTY);
 
-                    if(!tempMap[y][x].pathDirection[boolIndex] && !tempMap[y+1][x].pathDirection[boolIndex]){
-                        map[2 * (y+ 1)][((2 * x)+ 1)].setTerrain(Terrain.WALL);
-                    }
-                    if(!tempMap[y][x].pathDirection[boolIndex] && !tempMap[y][x+1].pathDirection[boolIndex]){
-                        map[(2 * y) + 1][2 * (x+ 1)].setTerrain(Terrain.WALL);
-                    }
-
-                }
-            }
+        if (currentMap.pathDirection[0] && prevValue != 1) {
+            map[(2 * y)][(2 * x) + 1].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y - 1][x], 0);
+        }
+        if (currentMap.pathDirection[1] && prevValue != 0) {
+            map[(2 * y) + 2][(2 * x) + 1].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y + 1][x], 1);
+        }
+        if (currentMap.pathDirection[2] && prevValue != 3) {
+            map[(2 * y) + 1][(2 * x) + 2].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y][x + 1], 2);
+        }
+        if (currentMap.pathDirection[3] && prevValue != 2) {
+            map[(2 * y) + 1][(2 * x)].setTerrain(Terrain.EMPTY);
+            initializeChamber(tempMap[y][x - 1], 3);
         }
 
     }
@@ -173,7 +174,7 @@ public class Level {
             int CurrentX = 0;
             for (Tile tile : tiles) {
                 tile.setPosition(new Coordinates(CurrentX, CurrentY));
-
+                tile.setTerrain(Terrain.WALL);
                 CurrentX++;
             }
             CurrentY++;
