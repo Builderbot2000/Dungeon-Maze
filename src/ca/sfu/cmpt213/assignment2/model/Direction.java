@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
+//used for ai so monster can go in random directions
 public enum Direction {
     NORTH, EAST, WEST, SOUTH, NORTHEAST, NORTHWEST, SOUTHWEST, SOUTHEAST;
 

@@ -14,7 +14,7 @@ public class Tile {
     private Coordinates position;
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
-    private ArrayList<Entity> inhabitants = new ArrayList<>(); // this doesn't need to be an arraylist?
+    private ArrayList<Entity> inhabitants = new ArrayList<>();
     private Boolean[] pathDirection = new Boolean[4];
 
     public Tile() {
@@ -37,30 +37,37 @@ public class Tile {
     }
 
     public void setVisited(Boolean visited) {
+
         this.isVisited = visited;
     }
 
     public Terrain getTerrain() {
+
         return this.terrain;
     }
 
     public void setTerrain(Terrain terrain) {
+
         this.terrain = terrain;
     }
 
     public Boolean getVisible() {
+
         return this.isVisible;
     }
 
-    public void setVisible(Boolean visible) {
+    public void setVisible(Boolean visible)
+    {
         this.isVisible = visible;
     }
 
-    public Boolean getIsInhabited() {
+    public Boolean getIsInhabited()
+    {
         return isInhabited;
     }
 
-    public void setIsInhabited(Boolean inhabited) {
+    public void setIsInhabited(Boolean inhabited)
+    {
         isInhabited = inhabited;
     }
 
@@ -74,14 +81,17 @@ public class Tile {
     }
 
     public ArrayList<Entity> getInhabitants() {
+
         return this.inhabitants;
     }
 
     public void addInhabitant(Entity newInhabitant) {
+
         this.inhabitants.add(newInhabitant);
     }
 
     public boolean removeThisInhabitant(Entity entity) {
+
         return this.inhabitants.remove(entity);
     }
 
@@ -89,6 +99,7 @@ public class Tile {
      * Sort inhabitants based on their overlap resolution priority
      */
     public void sortInhabitants() {
+
         Collections.sort(inhabitants);
     }
 }
