@@ -80,7 +80,7 @@ public class Handler {
                 " @: You (a hero)\n" +
                 " !: Monster\n" +
                 " $: Power\n" +
-                ".: Unexplored space\n" +
+                " .: Unexplored space\n" +
                 "MOVES:\n" +
                 " Use W (up), A (left), S (down) and D (right) to move.\n" +
                 " (You must press enter after each move)\n" +
@@ -227,8 +227,6 @@ public class Handler {
      * @param direction Any of eight directions defined in the Directions enumerator
      */
     private void moveEntity(Entity entity, Direction direction) {
-
-            System.out.println("Moving " + direction);
             if (!setEntity(entity,locateDirection(entity,direction)) && entity.getSymbol().equals("@")) {
                 System.out.println("You can't pass through walls!");
             }
