@@ -45,7 +45,7 @@ public class Level {
         createChamber();
     }
 
-    private void initializeTempMap(Tile currentTile) {
+    private void createMaze(Tile currentTile) {
 
         /*
         I was changing my code, I need to implement this logic //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
@@ -127,29 +127,29 @@ public class Level {
             }
         }
 
-        initializeChamber(tempMap[0][0], -1);
+        castMaze(tempMap[0][0], -1);
     }
 
-    void initializeChamber(Tile currentMap, int prevDirection) {
+    void castMaze(Tile currentMap, int prevDirection) {
         int y = currentMap.getPosition().getY();
         int x = currentMap.getPosition().getX();
 
         map[(2 * y) + 1][(2 * x) + 1].setTerrain(Terrain.EMPTY);
         if (currentMap.getPathDirection()[0] && prevDirection != 1) {
             map[(2 * y)][(2 * x) + 1].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y - 1][x], 0);
+            castMaze(tempMap[y - 1][x], 0);
         }
         if (currentMap.getPathDirection()[1] && prevDirection != 0) {
             map[(2 * y) + 2][(2 * x) + 1].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y + 1][x], 1);
+            castMaze(tempMap[y + 1][x], 1);
         }
         if (currentMap.getPathDirection()[2] && prevDirection != 3) {
             map[(2 * y) + 1][(2 * x) + 2].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y][x + 1], 2);
+            castMaze(tempMap[y][x + 1], 2);
         }
         if (currentMap.getPathDirection()[3] && prevDirection != 2) {
             map[(2 * y) + 1][(2 * x)].setTerrain(Terrain.EMPTY);
-            initializeChamber(tempMap[y][x - 1], 3);
+            castMaze(tempMap[y][x - 1], 3);
         }
     }
 
@@ -180,31 +180,22 @@ public class Level {
         tempMap[0][0].setVisited(true);
         numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         mapStack.push(tempMap[0][0]); //Chamber start position
-        initializeTempMap(tempMap[0][0]); //Chamber start position
+        createMaze(tempMap[0][0]); //Chamber start position
 
-        // Fill top edge with walls
-        for (Tile tile : map[0]) {
-            tile.setTerrain(Terrain.WALL);
-            tile.setVisible(true);
-        }
-        // Fill sides with walls
+        // Reveal top edge, sides, and bottom edge
+        for (Tile tile : map[0]) { tile.setVisible(true); }
         for (Tile[] tiles : map) {
-            tiles[0].setTerrain(Terrain.WALL);
             tiles[0].setVisible(true);
             tiles[CHAMBER_WIDTH].setTerrain(Terrain.WALL);
             tiles[CHAMBER_WIDTH].setVisible(true);
         }
-        // Fill bottom edge with walls
-        for (Tile tile : map[CHAMBER_HEIGHT]) {
-            tile.setTerrain(Terrain.WALL);
-            tile.setVisible(true);
-        }
+        for (Tile tile : map[CHAMBER_HEIGHT]) { tile.setVisible(true); }
 
         // Clear bugged walls
         for (int i = 1; i < MAP_HEIGHT - 2; i += 2) map[i][MAP_WIDTH - 2].setTerrain(Terrain.EMPTY);
 
         // Randomly make regulated holes in walls to create cycles
-        Random rand = new Random();
+        Random rand = new Random(); // Preset rng for performance purposes
         for (int i = 1; i < MAP_HEIGHT-1; i++) {
             for (int j = 1; j < MAP_WIDTH - 1; j++) {
                 Tile tile = map[i][j];
@@ -212,7 +203,7 @@ public class Level {
 
                     // Neighbourhood Check
                     int neighbourCount = 0, index = 0;
-                    boolean[] neighbourhood = new boolean[]{false,false,false,false};
+                    boolean[] neighbourhood = new boolean[]{false,false,false,false}; // validity flags
 
                     for (Direction direction : Direction.cardinals) {
                         Coordinates targetCoordinates = Handler.locateDirection(tile.getPosition(), direction);
@@ -235,6 +226,9 @@ public class Level {
                 }
             }
         }
+
+        // Check for enclosed spaces
+        for (int i = 1; i < MAP_HEIGHT - 2; i++) probe(map[i][MAP_WIDTH - 2],Direction.EAST);
     }
 
 
@@ -248,6 +242,29 @@ public class Level {
 
     public Tile tileAtCoordinates (Coordinates coordinates) {
         return this.map[coordinates.getY()][coordinates.getX()];
+    }
+
+    private boolean probe(Tile tile, Direction previousDirection) {
+        int currentX = tile.getPosition().getX();
+        int currentY = tile.getPosition().getY();
+
+        if (tile.getTerrain().equals(Terrain.EMPTY)) return false;
+        else if (currentX == 0 || currentX == MAP_WIDTH - 1 || currentY == 0 || currentY == MAP_HEIGHT - 1) {
+            return true; // Check if tile hits edge wall
+        } else {
+            for (Direction direction : Direction.cardinals) {
+                Tile targetTile = tileAtCoordinates(Handler.locateDirection(tile.getPosition(),direction));
+                if (!direction.equals(previousDirection) && targetTile.getTerrain().equals(Terrain.WALL)) {
+                    if (probe(targetTile,Direction.opposite(direction))) {
+                        System.out.println("HIT!");
+                        System.out.println(tile.getPosition().toString());
+                        tile.setTerrain(Terrain.EMPTY);
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     //1 character is worth 2 spaces

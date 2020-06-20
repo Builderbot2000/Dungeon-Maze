@@ -18,11 +18,24 @@ public enum Direction {
         NORTH, SOUTH, EAST, WEST
     };
 
-    public static Direction randomDirection()  {
-        return directions[new Random().nextInt(directions.length)];
+    public static Direction opposite(Direction direction) {
+        switch (direction) {
+            case NORTH -> {
+                return SOUTH;
+            }
+            case WEST -> {
+                return EAST;
+            }
+            case SOUTH -> {
+                return NORTH;
+            }
+            case EAST -> {
+                return WEST;
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 
-    public static Direction randomCardinal() {
-        return cardinals[new Random().nextInt(cardinals.length)];
-    }
 }

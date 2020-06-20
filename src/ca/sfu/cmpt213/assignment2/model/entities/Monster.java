@@ -6,6 +6,9 @@ import ca.sfu.cmpt213.assignment2.model.Direction;
 import ca.sfu.cmpt213.assignment2.model.Terrain;
 import ca.sfu.cmpt213.assignment2.model.Tile;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * Monster class which inherits its fields from Entity.
  * Manages monster objects movement patterns
@@ -24,39 +27,29 @@ public class Monster extends Entity {
     public void setPreviousLocation(Coordinates location) { previousLocation = location; }
 
     public Direction getAIDirection (Tile[][] map) {
-        int validDirections = 4;
-        Direction validDirection = Direction.NORTH;
+        ArrayList<Direction> validDirections = new ArrayList<>();
         for (Direction direction : Direction.cardinals) {
             Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
             Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
-            if (targetTile.getTerrain().equals(Terrain.WALL)) validDirections --;
-            else validDirection = direction;
+            if (targetTile.getTerrain().equals(Terrain.EMPTY)) validDirections.add(direction);
         }
 
-        if (validDirections > 1) {
+        // Seek random direction if backtrack is not the only viable option
+        if (validDirections.size() > 1) {
             while (true) {
-                Direction direction = Direction.randomCardinal();
+                Direction direction = validDirections.get(new Random().nextInt(validDirections.size()));
                 Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
                 Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
-
-                System.out.println("Previous Location: " + previousLocation.toString());
-                System.out.println("Current Location: " + targetTile.getPosition().toString());
 
                 boolean isBackTrack = false;
                 if (
                         targetTile.getPosition().getX() == previousLocation.getX()
-                                && targetTile.getPosition().getY() == previousLocation.getY()
+                        && targetTile.getPosition().getY() == previousLocation.getY()
                 ) isBackTrack = true;
 
-                if (isBackTrack) System.out.println("NOT ONE STEP BACK!");
-
-                if (targetTile.getTerrain().equals(Terrain.EMPTY) && !isBackTrack) {
-                    return direction;
-                }
+                if (targetTile.getTerrain().equals(Terrain.EMPTY) && !isBackTrack) return direction;
             }
         }
-        else  {
-            return validDirection;
-        }
+        else return validDirections.get(0);
     }
 }
