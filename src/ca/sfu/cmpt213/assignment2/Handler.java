@@ -46,8 +46,8 @@ public class Handler {
 
         // Spawn three monsters
         spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,1,generateID()));
-        spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
-        spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        // spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        // spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
 
         // Spawn powers in random locations, keep trying until POWER_COUNT powers have been
         // successfully spawned

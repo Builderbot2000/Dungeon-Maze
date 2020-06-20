@@ -24,20 +24,39 @@ public class Monster extends Entity {
     public void setPreviousLocation(Coordinates location) { previousLocation = location; }
 
     public Direction getAIDirection (Tile[][] map) {
-        while (true) {
-            Direction direction = Direction.randomDirection();
-            if (
-                    direction != Direction.NORTHEAST &&
-                    direction != Direction.NORTHWEST &&
-                    direction != Direction.SOUTHEAST &&
-                    direction != Direction.SOUTHWEST
-            ) {
+        int validDirections = 4;
+        Direction validDirection = Direction.NORTH;
+        for (Direction direction : Direction.cardinals) {
+            Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
+            Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
+            if (targetTile.getTerrain().equals(Terrain.WALL)) validDirections --;
+            else validDirection = direction;
+        }
+
+        if (validDirections > 1) {
+            while (true) {
+                Direction direction = Direction.randomCardinal();
                 Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
                 Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
-                if (targetTile.getTerrain().equals(Terrain.EMPTY) && !targetTile.getPosition().equals(previousLocation)) {
+
+                System.out.println("Previous Location: " + previousLocation.toString());
+                System.out.println("Current Location: " + targetTile.getPosition().toString());
+
+                boolean isBackTrack = false;
+                if (
+                        targetTile.getPosition().getX() == previousLocation.getX()
+                                && targetTile.getPosition().getY() == previousLocation.getY()
+                ) isBackTrack = true;
+
+                if (isBackTrack) System.out.println("NOT ONE STEP BACK!");
+
+                if (targetTile.getTerrain().equals(Terrain.EMPTY) && !isBackTrack) {
                     return direction;
                 }
             }
+        }
+        else  {
+            return validDirection;
         }
     }
 }

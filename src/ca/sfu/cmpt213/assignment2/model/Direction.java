@@ -8,11 +8,21 @@ import java.util.Random;
 public enum Direction {
     NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST;
 
-    private static final List<Direction> VALUES = List.of(values());
-    private static final int SIZE = VALUES.size();
-    private static final Random RANDOM = new Random();
+    // Utility array of eight directions
+    public static final Direction[] directions = new  Direction[] {
+        NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST
+    };
+
+    // Utility array of four cardinal directions
+    public static final Direction[] cardinals = new Direction[] {
+        NORTH, SOUTH, EAST, WEST
+    };
 
     public static Direction randomDirection()  {
-        return VALUES.get(RANDOM.nextInt(SIZE));
+        return directions[new Random().nextInt(directions.length)];
+    }
+
+    public static Direction randomCardinal() {
+        return cardinals[new Random().nextInt(cardinals.length)];
     }
 }

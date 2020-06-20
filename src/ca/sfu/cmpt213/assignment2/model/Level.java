@@ -17,11 +17,9 @@ public class Level {
             CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
             CAST_WIDTH = (int)Math.ceil(CHAMBER_WIDTH/2.0), CAST_HEIGHT = (int)Math.ceil(CHAMBER_HEIGHT/2.0);
 
-    public static final Direction[] cardinals = new Direction[] {Direction.NORTH, Direction.SOUTH,Direction.EAST,Direction.WEST};
-
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private int numberOfCellsVisited;
-    private Stack<Tile> mapStack = new Stack<>();
+    private final Stack<Tile> mapStack = new Stack<>();
     private final Tile[][] tempMap = new Tile[CAST_HEIGHT][CAST_WIDTH]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
 
     /**
@@ -216,7 +214,7 @@ public class Level {
                     int neighbourCount = 0, index = 0;
                     boolean[] neighbourhood = new boolean[]{false,false,false,false};
 
-                    for (Direction direction : cardinals) {
+                    for (Direction direction : Direction.cardinals) {
                         Coordinates targetCoordinates = Handler.locateDirection(tile.getPosition(), direction);
                         Tile neighbour = tileAtCoordinates(targetCoordinates);
                         if (neighbour.getTerrain().equals(Terrain.WALL)) {
