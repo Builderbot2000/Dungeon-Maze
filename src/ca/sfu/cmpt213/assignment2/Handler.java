@@ -45,16 +45,16 @@ public class Handler {
         spawnEntity(hero);
 
         // Spawn three monsters
-        spawnEntity(new Monster(Level.MAP_WIDTH - 2,1,generateID()));
-        spawnEntity(new Monster(1,Level.MAP_HEIGHT - 2,generateID()));
-        spawnEntity(new Monster(Level.MAP_WIDTH - 2,Level.MAP_HEIGHT - 2,generateID()));
+        spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,1,generateID()));
+        spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
 
         // Spawn powers in random locations, keep trying until POWER_COUNT powers have been
         // successfully spawned
         int placementSuccess = 0;
         while (placementSuccess < POWER_COUNT) {
-            int randomX = new Random().nextInt((Level.MAP_WIDTH - 3) - 3) + 3;
-            int randomY = new Random().nextInt((Level.MAP_HEIGHT - 3) - 3) + 3;
+            int randomX = new Random().nextInt((Level.CHAMBER_WIDTH - 2) - 2) + 2;
+            int randomY = new Random().nextInt((Level.CHAMBER_HEIGHT - 2) - 2) + 2;
             if (spawnEntity(new Power(randomX,randomY,generateID()))) placementSuccess ++;
         }
 
@@ -227,20 +227,23 @@ public class Handler {
      * @param direction Any of eight directions defined in the Directions enumerator
      */
     private void moveEntity(Entity entity, Direction direction) {
-            if (!setEntity(entity,locateDirection(entity,direction)) && entity.getSymbol().equals("@")) {
+            if (
+                !setEntity(entity,locateDirection(entity.getPosition(),direction))
+                && entity.getSymbol().equals("@")
+            ) {
                 System.out.println("You can't pass through walls!");
             }
     }
 
     /**
      * // Generate new coordinates based on direction
-     * @param entity the entity from which the detection will originate
+     * @param currentCoordinates the coordinates from which the detection will originate
      * @param direction the direction to be detected
      * @return coordinates of the detected direction
      */
-    public static Coordinates locateDirection(Entity entity, Direction direction) {
+    public static Coordinates locateDirection(Coordinates currentCoordinates, Direction direction) {
 
-        int originalX = entity.getPosition().getX(), originalY = entity.getPosition().getY();
+        int originalX = currentCoordinates.getX(), originalY = currentCoordinates.getY();
         int newX = originalX, newY = originalY;
         switch (direction) {
             case NORTH -> newY = originalY - 1;
@@ -266,7 +269,7 @@ public class Handler {
 
         // Reveal tiles around the entity in eight directions
         for (Direction direction : Direction.values()) {
-            Coordinates targetCoordinates = locateDirection(entity,direction);
+            Coordinates targetCoordinates = locateDirection(entity.getPosition(),direction);
             Tile targetTile = this.level.getMap()[targetCoordinates.getY()][targetCoordinates.getX()];
             targetTile.setVisible(true);
         }

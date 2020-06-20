@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 //used for ai so monster can go in random directions
 public enum Direction {
-    NORTH, EAST, WEST, SOUTH, NORTHEAST, NORTHWEST, SOUTHWEST, SOUTHEAST;
+    NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST;
 
     private static final List<Direction> VALUES = List.of(values());
     private static final int SIZE = VALUES.size();

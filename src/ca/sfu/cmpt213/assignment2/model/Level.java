@@ -1,7 +1,8 @@
 package ca.sfu.cmpt213.assignment2.model;
 
+import ca.sfu.cmpt213.assignment2.Handler;
+
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.Random;
 import java.util.Stack;
 
@@ -12,9 +13,11 @@ import java.util.Stack;
 public class Level {
 
     public static final int
-    MAP_WIDTH = 20, MAP_HEIGHT = 15,
-    CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
-    CAST_WIDTH = (int)Math.ceil(CHAMBER_WIDTH/2.0), CAST_HEIGHT = (int)Math.ceil(CHAMBER_HEIGHT/2.0);
+            MAP_WIDTH = 20, MAP_HEIGHT = 15,
+            CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
+            CAST_WIDTH = (int)Math.ceil(CHAMBER_WIDTH/2.0), CAST_HEIGHT = (int)Math.ceil(CHAMBER_HEIGHT/2.0);
+
+    public static final Direction[] cardinals = new Direction[] {Direction.NORTH, Direction.SOUTH,Direction.EAST,Direction.WEST};
 
     private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private int numberOfCellsVisited;
@@ -28,7 +31,6 @@ public class Level {
      * walls of the chamber while using our algorithm to generate the maze
      */
     public Level() {
-        System.out.println("CAST_HEIGHT:"+CAST_HEIGHT+" CAST_WIDTH:"+CAST_WIDTH);
 
         // Create map
         for (int i = 0; i < MAP_HEIGHT; i++) {
@@ -66,23 +68,23 @@ public class Level {
             // If a neighbour is not visited and its projected position is within bounds, add it to the list of valid neighbours
             // North neighbour
             if (currentY - 1 >= 0) {
-                if (!tempMap[currentY - 1][currentX].getVisited()) //Northern neighbour unvisited
+                if (!tempMap[currentY - 1][currentX].isVisited()) //Northern neighbour unvisited
                     neighbours.add(0);
             }
             //Southern neighbour
             if (currentY + 1 < CAST_HEIGHT) { //y index if increased is not greater than height of the chamber
-                if (!tempMap[currentY + 1][currentX].getVisited()) //Northern neighbour unvisited
+                if (!tempMap[currentY + 1][currentX].isVisited()) //Northern neighbour unvisited
                     neighbours.add(1);
             }
             //Eastern neighbour
             if (currentX + 1 < CAST_WIDTH) { //check edge case
-                if (!tempMap[currentY][currentX + 1].getVisited()) { //check if visited
+                if (!tempMap[currentY][currentX + 1].isVisited()) { //check if visited
                     neighbours.add(2);
                 }
             }
             //Western neighbour
             if (currentX - 1 >= 0) {
-                if (!tempMap[currentY][currentX - 1].getVisited()) {
+                if (!tempMap[currentY][currentX - 1].isVisited()) {
                     neighbours.add(3);
                 }
             }
@@ -90,11 +92,10 @@ public class Level {
 
                 //generate random number between 0 and 3 for direction
                 Random rand = new Random();
-                int upperBound = 4;
                 boolean randomizer;
                 int myDirection;
                 do {
-                    myDirection = rand.nextInt(upperBound);
+                    myDirection = rand.nextInt(4);
                     randomizer = neighbours.contains(myDirection);
                 } while (!randomizer);
 
@@ -102,19 +103,19 @@ public class Level {
 
                 switch (myDirection) {
                     case 0 -> { // North
-                        tempMap[currentY][currentX].pathDirection[0] = true;
+                        tempMap[currentY][currentX].getPathDirection()[0] = true;
                         currentTile = tempMap[currentY - 1][currentX];
                     }
                     case 1 -> { // South
-                        tempMap[currentY][currentX].pathDirection[1] = true;
+                        tempMap[currentY][currentX].getPathDirection()[1] = true;
                         currentTile = tempMap[currentY + 1][currentX];
                     }
                     case 2 -> { // East
-                        tempMap[currentY][currentX].pathDirection[2] = true;
+                        tempMap[currentY][currentX].getPathDirection()[2] = true;
                         currentTile = tempMap[currentY][currentX + 1];
                     }
                     case 3 -> { // West
-                        tempMap[currentY][currentX].pathDirection[3] = true;
+                        tempMap[currentY][currentX].getPathDirection()[3] = true;
                         currentTile = tempMap[currentY][currentX - 1];
                     }
                 }
@@ -136,19 +137,19 @@ public class Level {
         int x = currentMap.getPosition().getX();
 
         map[(2 * y) + 1][(2 * x) + 1].setTerrain(Terrain.EMPTY);
-        if (currentMap.pathDirection[0] && prevDirection != 1) {
+        if (currentMap.getPathDirection()[0] && prevDirection != 1) {
             map[(2 * y)][(2 * x) + 1].setTerrain(Terrain.EMPTY);
             initializeChamber(tempMap[y - 1][x], 0);
         }
-        if (currentMap.pathDirection[1] && prevDirection != 0) {
+        if (currentMap.getPathDirection()[1] && prevDirection != 0) {
             map[(2 * y) + 2][(2 * x) + 1].setTerrain(Terrain.EMPTY);
             initializeChamber(tempMap[y + 1][x], 1);
         }
-        if (currentMap.pathDirection[2] && prevDirection != 3) {
+        if (currentMap.getPathDirection()[2] && prevDirection != 3) {
             map[(2 * y) + 1][(2 * x) + 2].setTerrain(Terrain.EMPTY);
             initializeChamber(tempMap[y][x + 1], 2);
         }
-        if (currentMap.pathDirection[3] && prevDirection != 2) {
+        if (currentMap.getPathDirection()[3] && prevDirection != 2) {
             map[(2 * y) + 1][(2 * x)].setTerrain(Terrain.EMPTY);
             initializeChamber(tempMap[y][x - 1], 3);
         }
@@ -158,34 +159,6 @@ public class Level {
      * Creates an empty chamber with walls on all four edges.
      */
     private void createChamber() {
-        /*
-        // Fill top edge with walls
-        for (Tile tile : map[0]) {
-            tile.setTerrain(Terrain.WALL);
-            tile.setVisible(true);
-        }
-
-        // Fill sides with walls
-        for (Tile[] tiles : map) {
-            tiles[0].setTerrain(Terrain.WALL);
-            tiles[0].setVisible(true);
-            tiles[CHAMBER_WIDTH].setTerrain(Terrain.WALL);
-            tiles[CHAMBER_WIDTH].setVisible(true);
-        }
-
-        // Fill bottom edge with walls
-        for (Tile tile : map[CHAMBER_HEIGHT]) {
-            tile.setTerrain(Terrain.WALL);
-            tile.setVisible(true);
-        }
-        */
-
-        // DEBUG: Set all tiles to visible
-        for (Tile[] tiles : this.getMap()) {
-            for (Tile tile : tiles) {
-                tile.setVisible(true);
-            }
-        }
 
         // Give all tiles coordinates for map and temp map
         int CurrentY = 0;
@@ -210,6 +183,60 @@ public class Level {
         numberOfCellsVisited = 1; //setting number of cells visited to 1 because I have visited one now!
         mapStack.push(tempMap[0][0]); //Chamber start position
         initializeTempMap(tempMap[0][0]); //Chamber start position
+
+        // Fill top edge with walls
+        for (Tile tile : map[0]) {
+            tile.setTerrain(Terrain.WALL);
+            tile.setVisible(true);
+        }
+        // Fill sides with walls
+        for (Tile[] tiles : map) {
+            tiles[0].setTerrain(Terrain.WALL);
+            tiles[0].setVisible(true);
+            tiles[CHAMBER_WIDTH].setTerrain(Terrain.WALL);
+            tiles[CHAMBER_WIDTH].setVisible(true);
+        }
+        // Fill bottom edge with walls
+        for (Tile tile : map[CHAMBER_HEIGHT]) {
+            tile.setTerrain(Terrain.WALL);
+            tile.setVisible(true);
+        }
+
+        // Clear bugged walls
+        for (int i = 1; i < MAP_HEIGHT - 2; i += 2) map[i][MAP_WIDTH - 2].setTerrain(Terrain.EMPTY);
+
+        // Randomly make regulated holes in walls to create cycles
+        Random rand = new Random();
+        for (int i = 1; i < MAP_HEIGHT-1; i++) {
+            for (int j = 1; j < MAP_WIDTH - 1; j++) {
+                Tile tile = map[i][j];
+                if (tile.getTerrain().equals(Terrain.WALL)) {
+
+                    // Neighbourhood Check
+                    int neighbourCount = 0, index = 0;
+                    boolean[] neighbourhood = new boolean[]{false,false,false,false};
+
+                    for (Direction direction : cardinals) {
+                        Coordinates targetCoordinates = Handler.locateDirection(tile.getPosition(), direction);
+                        Tile neighbour = tileAtCoordinates(targetCoordinates);
+                        if (neighbour.getTerrain().equals(Terrain.WALL)) {
+                            neighbourCount++;
+                            neighbourhood[index] = true;
+                        }
+                        index ++;
+                    }
+
+                    // Corner exclusion test, tests vertical NS and horizontal EW
+                    boolean isStraight = false;
+                    if (neighbourhood[0] && neighbourhood[1]) isStraight = true;
+                    if (neighbourhood[2] && neighbourhood[3]) isStraight = true;
+
+                    if (neighbourCount == 2 && isStraight) {
+                        if (rand.nextInt(5) == 4) tile.setTerrain(Terrain.EMPTY);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -221,6 +248,9 @@ public class Level {
         this.map = map;
     }
 
+    public Tile tileAtCoordinates (Coordinates coordinates) {
+        return this.map[coordinates.getY()][coordinates.getX()];
+    }
 
     //1 character is worth 2 spaces
     @Override
@@ -229,8 +259,8 @@ public class Level {
         for (Tile[] tiles : this.map) {
             StringBuilder line = new StringBuilder();
             for (Tile tile : tiles) {
-                if (tile.getVisible()) {
-                    if (tile.getIsInhabited()) {
+                if (tile.isVisible()) {
+                    if (tile.isInhabited()) {
                         line.append(tile.getInhabitants().get(0).getSymbol()).append(" ");
                     } else {
                         Terrain terrain = tile.getTerrain();

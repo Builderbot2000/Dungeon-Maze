@@ -32,7 +32,7 @@ public class Monster extends Entity {
                     direction != Direction.SOUTHEAST &&
                     direction != Direction.SOUTHWEST
             ) {
-                Coordinates targetCoordinates = Handler.locateDirection(this, direction);
+                Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
                 Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
                 if (targetTile.getTerrain().equals(Terrain.EMPTY) && !targetTile.getPosition().equals(previousLocation)) {
                     return direction;

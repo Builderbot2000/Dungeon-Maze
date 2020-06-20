@@ -1,5 +1,7 @@
 package ca.sfu.cmpt213.assignment2;
 
+import ca.sfu.cmpt213.assignment2.model.Direction;
+
 import java.util.Scanner;
 
 public class Main {

@@ -15,17 +15,13 @@ public class Tile {
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
     private ArrayList<Entity> inhabitants = new ArrayList<>();
-    public Boolean[] pathDirection;
+    private boolean[] pathDirection = new boolean[4];
 
     public Tile() {
         terrain = Terrain.EMPTY;
         isVisible = false;
         isInhabited = false;
         isVisited = false;
-        pathDirection = new Boolean[4];
-        for(int i = 0; i < 4; i++)
-            pathDirection[i] = false;
-
     }
 
     // Getters and Setters
@@ -37,42 +33,35 @@ public class Tile {
         this.position = position;
     }
 
-    public Boolean getVisited() {
+    public Boolean isVisited() {
         return isVisited;
     }
 
     public void setVisited(Boolean visited) {
-
         this.isVisited = visited;
     }
 
     public Terrain getTerrain() {
-
         return this.terrain;
     }
 
     public void setTerrain(Terrain terrain) {
-
         this.terrain = terrain;
     }
 
-    public Boolean getVisible() {
-
+    public Boolean isVisible() {
         return this.isVisible;
     }
 
-    public void setVisible(Boolean visible)
-    {
+    public void setVisible(Boolean visible) {
         this.isVisible = visible;
     }
 
-    public Boolean getIsInhabited()
-    {
+    public Boolean isInhabited() {
         return isInhabited;
     }
 
-    public void setIsInhabited(Boolean inhabited)
-    {
+    public void setInhabited(Boolean inhabited) {
         isInhabited = inhabited;
     }
 
@@ -96,7 +85,6 @@ public class Tile {
     }
 
     public boolean removeThisInhabitant(Entity entity) {
-
         return this.inhabitants.remove(entity);
     }
 
@@ -104,7 +92,14 @@ public class Tile {
      * Sort inhabitants based on their overlap resolution priority
      */
     public void sortInhabitants() {
-
         Collections.sort(inhabitants);
+    }
+
+    public boolean[] getPathDirection() {
+        return pathDirection;
+    }
+
+    public void setPathDirection(boolean[] pathDirection) {
+        this.pathDirection = pathDirection;
     }
 }
