@@ -276,6 +276,7 @@ public class Level {
             for (Tile tile : tiles) {
                 if (tile.isVisible()) {
                     if (tile.isInhabited()) {
+                        tile.sortInhabitants();
                         line.append(tile.getInhabitants().get(0).getSymbol()).append(" ");
                     } else {
                         Terrain terrain = tile.getTerrain();

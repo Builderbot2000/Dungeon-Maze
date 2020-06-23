@@ -21,7 +21,6 @@ public class Handler {
     private final Level level;
     private final Hero hero;
     private static final int MONSTER_COUNT = 3;
-    private static final int POWER_COUNT = 3;
 
     /**
      * The entityList hosts the hero at index 0 and the three monsters at index 1,2,3 respectively.
@@ -34,41 +33,25 @@ public class Handler {
      */
     Handler(Scanner in) {
 
-        // Set input scanner
+        // Initialization of scanner, level, and hero
         scanner = in;
-
-        // Create level
         this.level = new Level();
-
-        // Spawn hero
         this.hero = new Hero(1,1,generateID());
         spawnEntity(hero);
 
         // Spawn three monsters
         spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,1,generateID()));
-        // spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
-        // spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
 
-        // Spawn powers in random locations, keep trying until POWER_COUNT powers have been
-        // successfully spawned
-        int placementSuccess = 0;
-        while (placementSuccess < POWER_COUNT) {
-            int randomX = new Random().nextInt((Level.CHAMBER_WIDTH - 2) - 2) + 2;
-            int randomY = new Random().nextInt((Level.CHAMBER_HEIGHT - 2) - 2) + 2;
-            if (spawnEntity(new Power(randomX,randomY,generateID()))) placementSuccess ++;
-        }
+        // Spawn three powers
+        scatterPower(3);
 
         // Initialize help menu
         helpMenu();
     }
 
-    /*
-        Set all methods to private as we don't have to call any of them
-        inside out main (besides setupUI?)
-    */
-
     // User Interface Methods
-
     /**
      * Prints instructions for keyboard inputs.
      */
@@ -102,11 +85,17 @@ public class Handler {
     }
 
     /**
-     * Game loop.
+     * Main game loop.
      */
     public void runGame() {
         boolean running = true;
         while (running) {
+
+            // Win Condition
+            if (hero.getKillCount() >= MONSTER_COUNT) {
+                System.out.println("You won! The dungeon is cleared of monsters.");
+                break;
+            }
 
             // Move monsters according to directions given by AI
             for (int i = 1; i < this.entityList.size(); i++) {
@@ -141,35 +130,13 @@ public class Handler {
     }
 
     // Entity Manipulation Methods
-
-    /**
-     * Generates a random ID for each entity so that they could be identified.
-     * individually in the entities list. The ID is always unique from existing IDs
-     * in the entities list.
-     * @return A random integer ID.
-     */
-    private int generateID() {
-        int randomID = 0;
-        boolean isUnique = false;
-        while (!isUnique) {
-            randomID = new Random().nextInt();
-            isUnique = true;
-            for (Entity entity : this.entityList) {
-                if (randomID == entity.getId()) {
-                    isUnique = false;
-                    break;
-                }
-            }
-        }
-        return randomID;
-    }
-
     /**
      * Spawns a defined entity based on their position field.
      * @param entity The entity to be spawned.
      * @return True if spawn is successful and false if spawn failed.
      */
     private boolean spawnEntity(Entity entity) {
+
         boolean success = setEntity(entity,entity.getPosition());
         if (success) this.entityList.add(entity);
         return success;
@@ -210,6 +177,10 @@ public class Handler {
                     resolveOverlap(targetTile);
                 }
             }
+            else {
+                targetTile.setVisible(true);
+                originalTile.setVisible(false);
+            }
 
             // Remember path if entity is monster
             if (entity.getSymbol().equals("!")) {
@@ -235,46 +206,7 @@ public class Handler {
             }
     }
 
-    /**
-     * // Generate new coordinates based on direction
-     * @param currentCoordinates the coordinates from which the detection will originate
-     * @param direction the direction to be detected
-     * @return coordinates of the detected direction
-     */
-    public static Coordinates locateDirection(Coordinates currentCoordinates, Direction direction) {
-
-        int originalX = currentCoordinates.getX(), originalY = currentCoordinates.getY();
-        int newX = originalX, newY = originalY;
-        switch (direction) {
-            case NORTH -> newY = originalY - 1;
-            case WEST -> newX = originalX - 1;
-            case SOUTH -> newY = originalY + 1;
-            case EAST -> newX = originalX + 1;
-            case NORTHEAST -> { newY = originalY - 1; newX = originalX + 1; }
-            case NORTHWEST -> { newY = originalY - 1; newX = originalX - 1; }
-            case SOUTHEAST -> { newY = originalY + 1; newX = originalX + 1; }
-            case SOUTHWEST -> { newY = originalY + 1; newX = originalX - 1; }
-        }
-        return new Coordinates(newX,newY);
-    }
-
-    /**
-     * Set eight tiles around an entity to visible.
-     * @param entity The entity from which vision is casted.
-     */
-    private void revealTiles (Entity entity) {
-
-        // Reveal tile that entity is standing on
-        this.level.getMap()[entity.getPosition().getY()][entity.getPosition().getX()].setVisible(true);
-
-        // Reveal tiles around the entity in eight directions
-        for (Direction direction : Direction.values()) {
-            Coordinates targetCoordinates = locateDirection(entity.getPosition(),direction);
-            Tile targetTile = this.level.getMap()[targetCoordinates.getY()][targetCoordinates.getX()];
-            targetTile.setVisible(true);
-        }
-    }
-
+    // Game Logic
     /**
      * Determines the result of an entity overlap based on game rules
      * @param tile The tile where the overlap occurs.
@@ -291,6 +223,7 @@ public class Handler {
                hero.setPowerCount(hero.getPowerCount() + 1);
                //noinspection SuspiciousListRemoveInLoop
                subjects.remove(i);
+               scatterPower(1); // Spawn a power somewhere to replace this one
            }
            else if (target.getSymbol().equals("!")) {
 
@@ -321,8 +254,86 @@ public class Handler {
         }
     }
 
+    private void scatterPower (int powerCount) {
+        // Spawn powers in random locations, keep trying until POWER_COUNT powers have been successfully spawned
+        int placementSuccess = 0;
+        Random rand = new Random();
+        while (placementSuccess < powerCount) {
+            int randomX = rand.nextInt((Level.CHAMBER_WIDTH - 2) - 2) + 2;
+            int randomY = rand.nextInt((Level.CHAMBER_HEIGHT - 2) - 2) + 2;
+            if (randomX == 1 && randomY == 1) return;
+            if (spawnEntity(new Power(randomX, randomY, generateID()))) {
+                placementSuccess++;
+                level.getMap()[randomY][randomX].setVisible(true);
+            }
+        }
+    }
+
     /**
-     * Reveals all tiles and makes hero invincible.
+     * Set eight tiles around an entity to visible.
+     * @param entity The entity from which vision is casted.
+     */
+    private void revealTiles (Entity entity) {
+
+        // Reveal tile that entity is standing on
+        this.level.getMap()[entity.getPosition().getY()][entity.getPosition().getX()].setVisible(true);
+
+        // Reveal tiles around the entity in eight directions
+        for (Direction direction : Direction.values()) {
+            Coordinates targetCoordinates = locateDirection(entity.getPosition(),direction);
+            Tile targetTile = this.level.getMap()[targetCoordinates.getY()][targetCoordinates.getX()];
+            targetTile.setVisible(true);
+        }
+    }
+
+    // Utility Methods
+    /**
+     * Generates a random ID for each entity so that they could be identified.
+     * individually in the entities list. The ID is always unique from existing IDs
+     * in the entities list.
+     * @return A random integer ID.
+     */
+    private int generateID() {
+        int randomID = 0;
+        boolean isUnique = false;
+        while (!isUnique) {
+            randomID = new Random().nextInt();
+            isUnique = true;
+            for (Entity entity : this.entityList) {
+                if (randomID == entity.getId()) {
+                    isUnique = false;
+                    break;
+                }
+            }
+        }
+        return randomID;
+    }
+
+    /**
+     * // Generate new coordinates based on direction
+     * @param currentCoordinates the coordinates from which the detection will originate
+     * @param direction the direction to be detected
+     * @return coordinates of the detected direction
+     */
+    public static Coordinates locateDirection(Coordinates currentCoordinates, Direction direction) {
+
+        int originalX = currentCoordinates.getX(), originalY = currentCoordinates.getY();
+        int newX = originalX, newY = originalY;
+        switch (direction) {
+            case NORTH -> newY = originalY - 1;
+            case WEST -> newX = originalX - 1;
+            case SOUTH -> newY = originalY + 1;
+            case EAST -> newX = originalX + 1;
+            case NORTHEAST -> { newY = originalY - 1; newX = originalX + 1; }
+            case NORTHWEST -> { newY = originalY - 1; newX = originalX - 1; }
+            case SOUTHEAST -> { newY = originalY + 1; newX = originalX + 1; }
+            case SOUTHWEST -> { newY = originalY + 1; newX = originalX - 1; }
+        }
+        return new Coordinates(newX,newY);
+    }
+
+    /**
+     * Enables various overpowered debug features
      */
     public void debug() {
 
@@ -335,5 +346,15 @@ public class Handler {
 
         // Set hero to invincible
         this.hero.setPowerCount(999999);
+
+        // Spawn 20 random monsters
+
+        int placementSuccess = 0;
+        while (placementSuccess < 20) {
+            int randomX = new Random().nextInt((Level.CHAMBER_WIDTH - 2) - 2) + 2;
+            int randomY = new Random().nextInt((Level.CHAMBER_HEIGHT - 2) - 2) + 2;
+            if (spawnEntity(new Monster(randomX,randomY,generateID()))) placementSuccess ++;
+        }
+
     }
 }

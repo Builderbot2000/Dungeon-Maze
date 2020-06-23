@@ -16,7 +16,7 @@ import java.util.Random;
 public class Monster extends Entity {
 
     public static final String SYMBOL = "!";
-    public static final int PRIORITY = 3;
+    public static final int PRIORITY = 2;
     private Coordinates previousLocation;
 
     public Monster(int x, int y, int id) {
