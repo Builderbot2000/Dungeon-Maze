@@ -17,10 +17,10 @@ public class Level {
             CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
             CAST_WIDTH = (int)Math.ceil(CHAMBER_WIDTH/2.0), CAST_HEIGHT = (int)Math.ceil(CHAMBER_HEIGHT/2.0);
 
-    private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
+    private final Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private int numberOfCellsVisited;
     private final Stack<Tile> mapStack = new Stack<>();
-    private final Tile[][] tempMap = new Tile[CAST_HEIGHT][CAST_WIDTH]; //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
+    private final Tile[][] tempMap = new Tile[CAST_HEIGHT][CAST_WIDTH];
 
     /**
      * Creates the "chamber" where the 20x15 matrix's walls are created. Thus we only work with the left over 18x13 space
@@ -56,8 +56,6 @@ public class Level {
 
             // Get coordinates of current tile and set as visited
             int currentX = currentTile.getPosition().getX(), currentY = currentTile.getPosition().getY();
-            // System.out.println("y index" + currentY);
-            // System.out.println("x index" + currentX);
             tempMap[currentY][currentX].setVisited(true);
 
             // Begin neighbourhood scan
@@ -98,7 +96,6 @@ public class Level {
                 } while (!randomizer);
 
                 //knock down wall
-
                 switch (myDirection) {
                     case 0 -> { // North
                         tempMap[currentY][currentX].getPathDirection()[0] = true;
@@ -120,7 +117,6 @@ public class Level {
 
                 mapStack.push(currentTile);
                 numberOfCellsVisited++;
-                // System.out.println(numberOfCellsVisited + " is the number of cells visited");
             }
             else {
                 currentTile = mapStack.pop(); //backtrack
@@ -207,7 +203,7 @@ public class Level {
 
                     for (Direction direction : Direction.cardinals) {
                         Coordinates targetCoordinates = Handler.locateDirection(tile.getPosition(), direction);
-                        Tile neighbour = tileAtCoordinates(targetCoordinates);
+                        Tile neighbour = getTileAtCoordinates(targetCoordinates);
                         if (neighbour.getTerrain().equals(Terrain.WALL)) {
                             neighbourCount++;
                             neighbourhood[index] = true;
@@ -231,16 +227,11 @@ public class Level {
         for (int i = 1; i < MAP_HEIGHT - 2; i++) probe(map[i][MAP_WIDTH - 2],Direction.EAST);
     }
 
-
     public Tile[][] getMap() {
         return map;
     }
 
-    public void setMap(Tile[][] map) {
-        this.map = map;
-    }
-
-    public Tile tileAtCoordinates (Coordinates coordinates) {
+    public Tile getTileAtCoordinates(Coordinates coordinates) {
         return this.map[coordinates.getY()][coordinates.getX()];
     }
 
@@ -253,11 +244,9 @@ public class Level {
             return true; // Check if tile hits edge wall
         } else {
             for (Direction direction : Direction.cardinals) {
-                Tile targetTile = tileAtCoordinates(Handler.locateDirection(tile.getPosition(),direction));
+                Tile targetTile = getTileAtCoordinates(Handler.locateDirection(tile.getPosition(),direction));
                 if (!direction.equals(previousDirection) && targetTile.getTerrain().equals(Terrain.WALL)) {
                     if (probe(targetTile,Direction.opposite(direction))) {
-                        System.out.println("HIT!");
-                        System.out.println(tile.getPosition().toString());
                         tile.setTerrain(Terrain.EMPTY);
                         return false;
                     }

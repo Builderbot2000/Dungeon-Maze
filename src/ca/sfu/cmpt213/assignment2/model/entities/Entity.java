@@ -42,6 +42,8 @@ public abstract class Entity implements Comparable<Entity> {
         return symbol;
     }
 
+    public void setSymbol(String symbol) { this.symbol = symbol; }
+
     public int getId() {
         return id;
     }

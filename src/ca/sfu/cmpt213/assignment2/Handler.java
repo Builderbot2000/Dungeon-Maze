@@ -21,6 +21,8 @@ public class Handler {
     private final Level level;
     private final Hero hero;
     private static final int MONSTER_COUNT = 3;
+    private int winCondition = MONSTER_COUNT;
+    private boolean fogOfWar;
 
     /**
      * The entityList hosts the hero at index 0 and the three monsters at index 1,2,3 respectively.
@@ -34,18 +36,19 @@ public class Handler {
     Handler(Scanner in) {
 
         // Initialization of scanner, level, and hero
-        scanner = in;
+        this.scanner = in;
         this.level = new Level();
         this.hero = new Hero(1,1,generateID());
-        spawnEntity(hero);
+        this.spawnEntity(hero);
+        this.fogOfWar = true;
 
         // Spawn three monsters
-        spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,1,generateID()));
-        spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
-        spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        this.spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,1,generateID()));
+        this.spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,generateID()));
+        this.spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,generateID()));
 
-        // Spawn three powers
-        scatterPower(3);
+        // Spawn one power
+        this.scatterPower(1);
 
         // Initialize help menu
         helpMenu();
@@ -67,7 +70,7 @@ public class Handler {
                 "MOVES:\n" +
                 " Use W (up), A (left), S (down) and D (right) to move.\n" +
                 " (You must press enter after each move)\n" +
-                " Press Q to quit the game or press H to bring up the help menu.\n";
+                " Press Q to quit the game or press ? to bring up the starting menu.\n";
         System.out.println(output);
     }
 
@@ -75,7 +78,7 @@ public class Handler {
      * Prints various in-game statistics.
      */
     public void printStats() {
-        System.out.println("Total number of monsters to be killed: " + MONSTER_COUNT);
+        System.out.println("Total number of monsters that needs to be killed: " + winCondition);
         System.out.println("Number of powers currently in possession: " + this.hero.getPowerCount());
         int survivorCount = 0;
         for (Entity entity: entityList) {
@@ -88,12 +91,20 @@ public class Handler {
      * Main game loop.
      */
     public void runGame() {
-        boolean running = true;
-        while (running) {
+        while (true) {
+
+            // Lose Condition
+            if (!hero.isAlive()) {
+                System.out.println("You perished in battle and was eaten by a monster. (or multiple monsters)");
+                this.level.getTileAtCoordinates(this.hero.getPosition()).getInhabitants().get(0).setSymbol("X");
+                this.revealMap();
+                break;
+            }
 
             // Win Condition
-            if (hero.getKillCount() >= MONSTER_COUNT) {
-                System.out.println("You won! The dungeon is cleared of monsters.");
+            if (hero.getKillCount() >= winCondition) {
+                System.out.println("You won! You have conquered the dungeon maze.");
+                this.revealMap();
                 break;
             }
 
@@ -108,24 +119,49 @@ public class Handler {
             // Print level and stats, open console for entry
             System.out.println(this.level.toString());
             this.printStats();
-            System.out.println("Enter your move - [W|A|S|D] or [Q|H]:");
-            String entry = scanner.nextLine();
 
-            // Moves hero based on entry and terminates if dead
-            switch (entry) {
-                case "W" -> moveEntity(hero,Direction.NORTH);
-                case "A" -> moveEntity(hero,Direction.WEST);
-                case "S" -> moveEntity(hero,Direction.SOUTH);
-                case "D" -> moveEntity(hero,Direction.EAST);
-                case "H" -> helpMenu();
-                case "Q" -> {
-                    System.out.println("Quitting...");
-                    hero.setAlive(false);
+            // Process user entry
+            boolean pass = false;
+            while (!pass) {
+                System.out.println("Enter your move - [W|A|S|D] or [?|M|C]:");
+                String entry = scanner.nextLine();
+                entry = entry.toUpperCase();
+                switch (entry) {
+                    case "W" -> {
+                        moveEntity(hero, Direction.NORTH);
+                        pass = true;
+                    }
+                    case "A" -> {
+                        moveEntity(hero, Direction.WEST);
+                        pass = true;
+                    }
+                    case "S" -> {
+                        moveEntity(hero, Direction.SOUTH);
+                        pass = true;
+                    }
+                    case "D" -> {
+                        moveEntity(hero, Direction.EAST);
+                        pass = true;
+                    }
+                    case "?" -> {
+                        helpMenu();
+                        pass = false;
+                    }
+                    case "M" -> {
+                        this.revealMap();
+                        pass = false;
+                    }
+                    case "C" -> {
+                        this.winCondition = 1;
+                        pass = false;
+                    }
+                    default -> {
+                        System.out.println("Invalid move. Please enter just A (left), S (down), D (right), W (up), or ? (help), M (show map), C (cheat).");
+                        pass = false;
+                    }
                 }
-                default -> System.out.println("Invalid input! Input can only be W|A|S|D or Q.");
             }
             revealTiles(hero);
-            running = hero.isAlive();
         }
     }
 
@@ -163,10 +199,10 @@ public class Handler {
             entity.setPosition(newCoordinates);
 
             originalTile.removeThisInhabitant(entity);
-            originalTile.updateTile(true,false);
+            originalTile.updateTile();
 
             targetTile.addInhabitant(entity);
-            targetTile.updateTile(true,false);
+            targetTile.updateTile();
 
             // Reveal tiles if entity is hero
             if (entity.getSymbol().equals("@")) {
@@ -177,7 +213,7 @@ public class Handler {
                     resolveOverlap(targetTile);
                 }
             }
-            else {
+            else if (fogOfWar) {
                 targetTile.setVisible(true);
                 originalTile.setVisible(false);
             }
@@ -226,32 +262,23 @@ public class Handler {
                scatterPower(1); // Spawn a power somewhere to replace this one
            }
            else if (target.getSymbol().equals("!")) {
-
-               // Deal damage to hero and check if dead
                hero.setPowerCount(hero.getPowerCount() - 1);
-               hero.update();
+               hero.setKillCount(hero.getKillCount() + 1);
 
-               if (hero.isAlive()) {
-                   hero.setKillCount(hero.getKillCount() + 1);
+               // Removes monster from tile and cast into temporary storage
+               Monster targetMonster = ((Monster)subjects.remove(i));
 
-                   // Removes monster from tile and cast into temporary storage
-                   Monster targetMonster = ((Monster)subjects.remove(i));
-
-                   // Removes this specific monster from entityList based on id
-                   // This is so that its presence on handler is gone as well
-                   Entity targetEntity = null;
-                   for (Entity entity : this.entityList) {
-                       if (entity.getId() == targetMonster.getId()) {
-                           targetEntity = entity;
-                       }
-                   }
-                   this.entityList.remove(targetEntity);
-                   System.out.println("A monster is killed.");
+               // Removes this specific monster from entityList based on id
+               // This is so that its presence on handler is gone as well
+               Entity targetEntity = null;
+               for (Entity entity : this.entityList) {
+                   if (entity.getId() == targetMonster.getId()) targetEntity = entity;
                }
-               else System.out.println("You perished in battle.");
+               this.entityList.remove(targetEntity);
            }
            else System.out.println("Entity not recognized!");
         }
+        hero.update();
     }
 
     private void scatterPower (int powerCount) {
@@ -333,28 +360,32 @@ public class Handler {
     }
 
     /**
-     * Enables various overpowered debug features
+     * Permanently reveals all tiles of level
      */
-    public void debug() {
-
-        // Set all tiles to visible
-        for (Tile[] tiles : level.getMap()) {
+    private void revealMap () {
+        for (Tile[] tiles : this.level.getMap()) {
             for (Tile tile : tiles) {
                 tile.setVisible(true);
             }
         }
+        System.out.println(level.toString());
+        fogOfWar = false;
+    }
+
+    /**
+     * Enables various overpowered debug features
+     */
+    public void debug() {
 
         // Set hero to invincible
         this.hero.setPowerCount(999999);
 
         // Spawn 20 random monsters
-
         int placementSuccess = 0;
         while (placementSuccess < 20) {
             int randomX = new Random().nextInt((Level.CHAMBER_WIDTH - 2) - 2) + 2;
             int randomY = new Random().nextInt((Level.CHAMBER_HEIGHT - 2) - 2) + 2;
             if (spawnEntity(new Monster(randomX,randomY,generateID()))) placementSuccess ++;
         }
-
     }
 }

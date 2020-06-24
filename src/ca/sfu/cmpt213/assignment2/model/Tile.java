@@ -14,8 +14,8 @@ public class Tile {
     private Coordinates position;
     private Terrain terrain;
     private Boolean isVisible, isVisited, isInhabited;
-    private ArrayList<Entity> inhabitants = new ArrayList<>();
-    private boolean[] pathDirection = new boolean[4];
+    private final ArrayList<Entity> inhabitants = new ArrayList<>();
+    private final boolean[] pathDirection = new boolean[4];
 
     public Tile() {
         terrain = Terrain.EMPTY;
@@ -61,31 +61,21 @@ public class Tile {
         return isInhabited;
     }
 
-    public void setInhabited(Boolean inhabited) {
-        isInhabited = inhabited;
-    }
-
-    public void updateTile(boolean flag1, boolean flag2) {
-
+    public void updateTile() {
         // Automatically sets isInhabited flag
-        if (flag1) this.isInhabited = this.inhabitants.size() != 0;
-
-        // Automatically shuffles inhabitants list by priority
-        if (flag2) System.out.println("Shuffle!");
+        this.isInhabited = this.inhabitants.size() != 0;
     }
 
     public ArrayList<Entity> getInhabitants() {
-
         return this.inhabitants;
     }
 
     public void addInhabitant(Entity newInhabitant) {
-
         this.inhabitants.add(newInhabitant);
     }
 
-    public boolean removeThisInhabitant(Entity entity) {
-        return this.inhabitants.remove(entity);
+    public void removeThisInhabitant(Entity entity) {
+        this.inhabitants.remove(entity);
     }
 
     /**
@@ -97,9 +87,5 @@ public class Tile {
 
     public boolean[] getPathDirection() {
         return pathDirection;
-    }
-
-    public void setPathDirection(boolean[] pathDirection) {
-        this.pathDirection = pathDirection;
     }
 }
