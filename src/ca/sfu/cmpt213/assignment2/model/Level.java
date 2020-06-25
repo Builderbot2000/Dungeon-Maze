@@ -16,7 +16,7 @@ public class Level {
     public static final int
             MAP_WIDTH = 20, MAP_HEIGHT = 15,
             CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
-            CAST_WIDTH = (int)Math.ceil(CHAMBER_WIDTH/2.0), CAST_HEIGHT = (int)Math.ceil(CHAMBER_HEIGHT/2.0);
+            CAST_WIDTH = (int) Math.ceil(CHAMBER_WIDTH / 2.0), CAST_HEIGHT = (int) Math.ceil(CHAMBER_HEIGHT / 2.0);
 
     private final Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private int numberOfCellsVisited;
@@ -118,8 +118,7 @@ public class Level {
 
                 mapStack.push(currentTile);
                 numberOfCellsVisited++;
-            }
-            else {
+            } else {
                 currentTile = mapStack.pop(); //backtrack
             }
         }
@@ -180,27 +179,31 @@ public class Level {
         createMaze(tempMap[0][0]); //Chamber start position
 
         // Reveal top edge, sides, and bottom edge
-        for (Tile tile : map[0]) { tile.setVisible(true); }
+        for (Tile tile : map[0]) {
+            tile.setVisible(true);
+        }
         for (Tile[] tiles : map) {
             tiles[0].setVisible(true);
             tiles[CHAMBER_WIDTH].setTerrain(Terrain.WALL);
             tiles[CHAMBER_WIDTH].setVisible(true);
         }
-        for (Tile tile : map[CHAMBER_HEIGHT]) { tile.setVisible(true); }
+        for (Tile tile : map[CHAMBER_HEIGHT]) {
+            tile.setVisible(true);
+        }
 
         // Clear bugged walls
         for (int i = 1; i < MAP_HEIGHT - 2; i += 2) map[i][MAP_WIDTH - 2].setTerrain(Terrain.EMPTY);
 
         // Randomly make regulated holes in walls to create cycles
         Random rand = new Random(); // Preset rng for performance purposes
-        for (int i = 1; i < MAP_HEIGHT-1; i++) {
+        for (int i = 1; i < MAP_HEIGHT - 1; i++) {
             for (int j = 1; j < MAP_WIDTH - 1; j++) {
                 Tile tile = map[i][j];
                 if (tile.getTerrain().equals(Terrain.WALL)) {
 
                     // Neighbourhood Check
                     int neighbourCount = 0, index = 0;
-                    boolean[] neighbourhood = new boolean[]{false,false,false,false}; // validity flags
+                    boolean[] neighbourhood = new boolean[]{false, false, false, false}; // validity flags
 
                     for (Direction direction : Direction.cardinals) {
                         Coordinates targetCoordinates = Utility.locateDirection(tile.getPosition(), direction);
@@ -209,7 +212,7 @@ public class Level {
                             neighbourCount++;
                             neighbourhood[index] = true;
                         }
-                        index ++;
+                        index++;
                     }
 
                     // Corner exclusion test, tests vertical NS and horizontal EW
@@ -225,7 +228,8 @@ public class Level {
         }
 
         // Check for enclosed spaces
-        for (int i = 1; i < MAP_HEIGHT - 2; i++) probe(map[i][MAP_WIDTH - 2],Direction.EAST);
+        for (int i = 1; i < MAP_HEIGHT - 2; i++)
+            probe(map[i][MAP_WIDTH - 2], Direction.EAST);
     }
 
     public Tile[][] getMap() {
@@ -240,14 +244,15 @@ public class Level {
         int currentX = tile.getPosition().getX();
         int currentY = tile.getPosition().getY();
 
-        if (tile.getTerrain().equals(Terrain.EMPTY)) return false;
+        if (tile.getTerrain().equals(Terrain.EMPTY))
+            return false;
         else if (currentX == 0 || currentX == MAP_WIDTH - 1 || currentY == 0 || currentY == MAP_HEIGHT - 1) {
             return true; // Check if tile hits edge wall
         } else {
             for (Direction direction : Direction.cardinals) {
-                Tile targetTile = getTileAtCoordinates(Utility.locateDirection(tile.getPosition(),direction));
+                Tile targetTile = getTileAtCoordinates(Utility.locateDirection(tile.getPosition(), direction));
                 if (!direction.equals(previousDirection) && targetTile.getTerrain().equals(Terrain.WALL)) {
-                    if (probe(targetTile,Utility.opposite(direction))) {
+                    if (probe(targetTile, Utility.opposite(direction))) {
                         tile.setTerrain(Terrain.EMPTY);
                         return false;
                     }
@@ -256,7 +261,30 @@ public class Level {
             return false;
         }
     }
+    private static void drawDungeon(String[][] drawnMap){
 
+        Level myDungeon = new Level();
+        Tile[][] map = myDungeon.getMap();
+
+        for(int rows = 0; rows< Level.MAP_HEIGHT; rows++){
+            for(int cols = 0; cols<Level.MAP_WIDTH;cols++){
+                if(map[rows][cols].isInhabited()){
+                    map[rows][cols].sortInhabitants();
+                    //drawnMap.append(tile.getInhabitants().get(0).getSymbol()).append(" ");
+                }
+                if(!map[rows][cols].isVisible()){
+                    drawnMap[rows][cols] = ".";
+                }
+                else if(map[rows][cols].isVisible() && map[rows][cols].getTerrain() == Terrain.WALL){
+                    drawnMap[rows][cols] = "#";
+                }
+                else if(map[rows][cols].isVisible() && (map[rows][cols].getTerrain() == Terrain.EMPTY) && !map[rows][cols].isInhabited()){
+                    drawnMap[rows][cols] = " ";
+                }
+            }
+        }
+
+    }
     //1 character is worth 2 spaces
     @Override
     public String toString() {
@@ -267,19 +295,21 @@ public class Level {
                 if (tile.isVisible()) {
                     if (tile.isInhabited()) {
                         tile.sortInhabitants();
-                        line.append(tile.getInhabitants().get(0).getSymbol()).append(" ");
+                        line.append(tile.getInhabitants().get(0).getSymbol());
                     } else {
                         Terrain terrain = tile.getTerrain();
                         if (terrain == Terrain.EMPTY) {
-                            line.append("  ");
+                            line.append(" ");
                         } else {
-                            line.append("# ");
+                            line.append("#");
                         }
                     }
                 } else {
-                    line.append(". ");
+                    line.append(".");
                 }
+                //line.append(" "); uncomment this if you want to go back to the old format. (Easier to reconfigure with this configuration)
             }
+            line.append(" ");
             line.append("\n");
             output.append(line);
         }
