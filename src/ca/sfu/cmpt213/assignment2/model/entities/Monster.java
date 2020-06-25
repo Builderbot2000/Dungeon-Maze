@@ -11,7 +11,7 @@ import java.util.Random;
 
 /**
  * Monster class which inherits its fields from Entity.
- * Manages monster objects movement patterns
+ * Manages monster objects movement patterns.
  */
 public class Monster extends Entity {
 

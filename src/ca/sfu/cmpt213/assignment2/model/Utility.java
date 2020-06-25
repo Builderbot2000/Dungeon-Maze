@@ -5,7 +5,10 @@ import ca.sfu.cmpt213.assignment2.model.entities.Entity;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+/**
+ * Generates unique ID's for various Entities (Hero,Monster,Power) Updates Coordinates of the various Objects in the Level
+ * and Handles their movements.
+ */
 public class Utility {
 
     /**

@@ -7,6 +7,9 @@ import ca.sfu.cmpt213.assignment2.model.entities.Monster;
 
 import java.util.Scanner;
 
+/**
+ * Initializes the UI and manages user input in relation to the game and the various mechanics of the Objects that it uses
+ */
 public class UserInterface {
 
     private static final Scanner scanner = new Scanner(System.in);

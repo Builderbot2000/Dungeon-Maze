@@ -4,6 +4,7 @@ import ca.sfu.cmpt213.assignment2.model.Coordinates;
 
 /**
  * Abstract Entity class parent of Hero and Monster.
+ * This class used as a basis for these classes to be implemented as they share common functionality
  */
 public abstract class Entity implements Comparable<Entity> {
 

@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Stack;
 
 /**
- * Creates the map where in which gameplay will take place
+ * Creates the map where in which gameplay will take place. Uses DFS and Backtracking to achieve the creation of the Level.
  */
 //some local changes
 public class Level {
