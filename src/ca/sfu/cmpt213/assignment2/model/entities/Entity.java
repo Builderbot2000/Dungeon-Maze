@@ -15,7 +15,7 @@ public abstract class Entity implements Comparable<Entity> {
     private final int priority; // The lower the number, the earlier it gets resolved
     private final int id; // Unique identifier for each individual entity
 
-    public Entity(int x, int y, String symbol, String entityType,  int priority, int id) {
+    public Entity(int x, int y, String symbol, String entityType, int priority, int id) {
         this.symbol = symbol;
         this.entityType = entityType;
         this.priority = priority;

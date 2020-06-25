@@ -10,7 +10,7 @@ public enum Direction {
     NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST;
 
     // Utility array of four cardinal directions
-    public static final Direction[] cardinals = new Direction[] {
-        NORTH, SOUTH, EAST, WEST
+    public static final Direction[] cardinals = new Direction[]{
+            NORTH, SOUTH, EAST, WEST
     };
 }
