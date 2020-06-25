@@ -8,6 +8,7 @@ import java.util.Collections;
 
 /**
  * Stores information in regards to what the an individual tile holds (Monster,Hero,empty,wall)
+ * Is used to create and later on manage the Level while playing the game.
  */
 
 public class Tile {

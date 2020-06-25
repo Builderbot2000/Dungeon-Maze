@@ -4,6 +4,7 @@ import ca.sfu.cmpt213.assignment2.model.Coordinates;
 
 /**
  * Abstract Entity class parent of Hero and Monster.
+ * This class used as a basis for these classes to be implemented as they share common functionality
  */
 public abstract class Entity implements Comparable<Entity> {
 
@@ -14,7 +15,7 @@ public abstract class Entity implements Comparable<Entity> {
     private final int priority; // The lower the number, the earlier it gets resolved
     private final int id; // Unique identifier for each individual entity
 
-    public Entity(int x, int y, String symbol, String entityType,  int priority, int id) {
+    public Entity(int x, int y, String symbol, String entityType, int priority, int id) {
         this.symbol = symbol;
         this.entityType = entityType;
         this.priority = priority;

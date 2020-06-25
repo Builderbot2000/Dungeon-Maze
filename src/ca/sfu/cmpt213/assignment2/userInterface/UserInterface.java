@@ -7,6 +7,9 @@ import ca.sfu.cmpt213.assignment2.model.entities.Monster;
 
 import java.util.Scanner;
 
+/**
+ * Initializes the UI and manages user input in relation to the game and the various mechanics of the Objects that it uses
+ */
 public class UserInterface {
 
     private static final Scanner scanner = new Scanner(System.in);
@@ -37,8 +40,8 @@ public class UserInterface {
         System.out.println("Total number of monsters that needs to be killed: " + handler.getWinCondition());
         System.out.println("Number of powers currently in possession: " + handler.getHero().getPowerCount());
         int survivorCount = 0;
-        for (Entity entity: handler.getEntityList()) {
-            if (entity.getSymbol().equals("!")) survivorCount ++;
+        for (Entity entity : handler.getEntityList()) {
+            if (entity.getSymbol().equals("!")) survivorCount++;
         }
         System.out.println("Number of monsters alive: " + survivorCount);
     }
@@ -67,8 +70,8 @@ public class UserInterface {
             // Move monsters according to directions given by AI
             for (int i = 1; i < handler.getEntityList().size(); i++) {
                 if (handler.getEntityList().get(i).getSymbol().equals("!")) {
-                    Monster currentMonster = ((Monster)handler.getEntityList().get(i));
-                    handler.moveEntity(currentMonster,currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
+                    Monster currentMonster = ((Monster) handler.getEntityList().get(i));
+                    handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
                 }
             }
 

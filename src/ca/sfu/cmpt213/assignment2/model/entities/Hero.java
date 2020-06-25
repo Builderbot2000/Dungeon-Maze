@@ -4,13 +4,13 @@ package ca.sfu.cmpt213.assignment2.model.entities;
  * Hero class that is the player with fields kill count and powerCount.
  * Other fields and methods inherited from Entity
  */
-public class Hero extends Entity{
+public class Hero extends Entity {
 
     private int killCount; //number of monsters killed
     private int powerCount; //number of powers collected
 
     public Hero(int x, int y, int id) {
-        super(x,y,"@","hero",1,id);
+        super(x, y, "@", "hero", 1, id);
         this.killCount = 0;
         this.powerCount = 0;
     }
@@ -34,5 +34,6 @@ public class Hero extends Entity{
 
     @Override
     public void update() {
-        if (powerCount < 0) this.setAlive(false); }
+        if (powerCount < 0) this.setAlive(false);
+    }
 }

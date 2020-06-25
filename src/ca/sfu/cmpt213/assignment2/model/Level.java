@@ -8,27 +8,20 @@ import java.util.Random;
 import java.util.Stack;
 
 /**
- * Creates the map where in which gameplay will take place
+ * Creates the map where in which gameplay will take place. Uses DFS and Backtracking to achieve the creation of the Level.
  */
-//some local changes
 public class Level {
 
     public static final int
             MAP_WIDTH = 20, MAP_HEIGHT = 15,
             CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
-            CAST_WIDTH = (int)Math.ceil(CHAMBER_WIDTH/2.0), CAST_HEIGHT = (int)Math.ceil(CHAMBER_HEIGHT/2.0);
+            CAST_WIDTH = (int) Math.ceil(CHAMBER_WIDTH / 2.0), CAST_HEIGHT = (int) Math.ceil(CHAMBER_HEIGHT / 2.0);
 
     private final Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
     private int numberOfCellsVisited;
     private final Stack<Tile> mapStack = new Stack<>();
     private final Tile[][] tempMap = new Tile[CAST_HEIGHT][CAST_WIDTH];
 
-    /**
-     * Creates the "chamber" where the 20x15 matrix's walls are created. Thus we only work with the left over 18x13 space
-     * However this also means while initializing maze we need to use the indexes in loops/recursion as j = (MAP_WIDTH-CHAMBER_WIDTH)/2 and i = (MAP_HEIGHT-CHAMBER_HEIGHT)/2 with
-     * the LENGTHS being 18 and 13 respectively. This is to ensure that we are working within the chamber and not modifying the
-     * walls of the chamber while using our algorithm to generate the maze
-     */
     public Level() {
 
         // Create map
@@ -46,17 +39,14 @@ public class Level {
         createChamber();
     }
 
+    //DFS algorithm with backtracking. Using scaling idea with a temporary map in order to later scale up.
     private void createMaze(Tile currentTile) {
 
-        /*
-        I was changing my code, I need to implement this logic //https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
-        The reason behind this is, all of the algorithms and the sudo code for them are made with the idea that walls have 0 thickness/width and height. The one that do have thick walls inflate them during the drawing phase
-        I believe this stackoverflow link that I added will solve our problems, I also added stuff accordingly
-         */
         while (numberOfCellsVisited < CAST_WIDTH * CAST_HEIGHT) {
 
             // Get coordinates of current tile and set as visited
-            int currentX = currentTile.getPosition().getX(), currentY = currentTile.getPosition().getY();
+            int currentX = currentTile.getPosition().getX();
+            int currentY = currentTile.getPosition().getY();
             tempMap[currentY][currentX].setVisited(true);
 
             // Begin neighbourhood scan
@@ -118,8 +108,7 @@ public class Level {
 
                 mapStack.push(currentTile);
                 numberOfCellsVisited++;
-            }
-            else {
+            } else {
                 currentTile = mapStack.pop(); //backtrack
             }
         }
@@ -127,6 +116,10 @@ public class Level {
         castMaze(tempMap[0][0], -1);
     }
 
+    /*
+     * Initializes Recursively actual map with tempMap which by scaling upwards and using the mathematical ideas from:
+     * https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
+     */
     void castMaze(Tile currentMap, int prevDirection) {
         int y = currentMap.getPosition().getY();
         int x = currentMap.getPosition().getX();
@@ -180,27 +173,32 @@ public class Level {
         createMaze(tempMap[0][0]); //Chamber start position
 
         // Reveal top edge, sides, and bottom edge
-        for (Tile tile : map[0]) { tile.setVisible(true); }
+        for (Tile tile : map[0]) {
+            tile.setVisible(true);
+        }
         for (Tile[] tiles : map) {
             tiles[0].setVisible(true);
             tiles[CHAMBER_WIDTH].setTerrain(Terrain.WALL);
             tiles[CHAMBER_WIDTH].setVisible(true);
         }
-        for (Tile tile : map[CHAMBER_HEIGHT]) { tile.setVisible(true); }
+        for (Tile tile : map[CHAMBER_HEIGHT]) {
+            tile.setVisible(true);
+        }
 
         // Clear bugged walls
-        for (int i = 1; i < MAP_HEIGHT - 2; i += 2) map[i][MAP_WIDTH - 2].setTerrain(Terrain.EMPTY);
+        for (int i = 1; i < MAP_HEIGHT - 2; i += 2)
+            map[i][MAP_WIDTH - 2].setTerrain(Terrain.EMPTY);
 
         // Randomly make regulated holes in walls to create cycles
         Random rand = new Random(); // Preset rng for performance purposes
-        for (int i = 1; i < MAP_HEIGHT-1; i++) {
+        for (int i = 1; i < MAP_HEIGHT - 1; i++) {
             for (int j = 1; j < MAP_WIDTH - 1; j++) {
                 Tile tile = map[i][j];
                 if (tile.getTerrain().equals(Terrain.WALL)) {
 
                     // Neighbourhood Check
                     int neighbourCount = 0, index = 0;
-                    boolean[] neighbourhood = new boolean[]{false,false,false,false}; // validity flags
+                    boolean[] neighbourhood = new boolean[]{false, false, false, false}; // validity flags
 
                     for (Direction direction : Direction.cardinals) {
                         Coordinates targetCoordinates = Utility.locateDirection(tile.getPosition(), direction);
@@ -209,7 +207,7 @@ public class Level {
                             neighbourCount++;
                             neighbourhood[index] = true;
                         }
-                        index ++;
+                        index++;
                     }
 
                     // Corner exclusion test, tests vertical NS and horizontal EW
@@ -225,7 +223,8 @@ public class Level {
         }
 
         // Check for enclosed spaces
-        for (int i = 1; i < MAP_HEIGHT - 2; i++) probe(map[i][MAP_WIDTH - 2],Direction.EAST);
+        for (int i = 1; i < MAP_HEIGHT - 2; i++)
+            probe(map[i][MAP_WIDTH - 2], Direction.EAST);
     }
 
     public Tile[][] getMap() {
@@ -240,14 +239,15 @@ public class Level {
         int currentX = tile.getPosition().getX();
         int currentY = tile.getPosition().getY();
 
-        if (tile.getTerrain().equals(Terrain.EMPTY)) return false;
+        if (tile.getTerrain().equals(Terrain.EMPTY))
+            return false;
         else if (currentX == 0 || currentX == MAP_WIDTH - 1 || currentY == 0 || currentY == MAP_HEIGHT - 1) {
             return true; // Check if tile hits edge wall
         } else {
             for (Direction direction : Direction.cardinals) {
-                Tile targetTile = getTileAtCoordinates(Utility.locateDirection(tile.getPosition(),direction));
+                Tile targetTile = getTileAtCoordinates(Utility.locateDirection(tile.getPosition(), direction));
                 if (!direction.equals(previousDirection) && targetTile.getTerrain().equals(Terrain.WALL)) {
-                    if (probe(targetTile,Utility.opposite(direction))) {
+                    if (probe(targetTile, Utility.opposite(direction))) {
                         tile.setTerrain(Terrain.EMPTY);
                         return false;
                     }
@@ -267,19 +267,21 @@ public class Level {
                 if (tile.isVisible()) {
                     if (tile.isInhabited()) {
                         tile.sortInhabitants();
-                        line.append(tile.getInhabitants().get(0).getSymbol()).append(" ");
+                        line.append(tile.getInhabitants().get(0).getSymbol());
                     } else {
                         Terrain terrain = tile.getTerrain();
                         if (terrain == Terrain.EMPTY) {
-                            line.append("  ");
+                            line.append(" ");
                         } else {
-                            line.append("# ");
+                            line.append("#");
                         }
                     }
                 } else {
-                    line.append(". ");
+                    line.append(".");
                 }
+                line.append(" "); //uncomment this if you want to go back to the old format. (Easier to reconfigure with this configuration)
             }
+            line.append(" ");
             line.append("\n");
             output.append(line);
         }
