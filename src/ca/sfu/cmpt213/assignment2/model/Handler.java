@@ -15,7 +15,6 @@ import java.util.Random;
  * Sets up text menu and gameplay environment.
  * Manages user inputs and handles them accordingly.
  */
-
 public class Handler {
 
     private final Level level;
@@ -25,25 +24,26 @@ public class Handler {
     private boolean fogOfWar;
 
     /**
+     * A record of all entities on map so that they can be accurately manipulated by Handler.
      * The entityList hosts the hero at index 0 and the three monsters at index 1,2,3 respectively.
      */
     ArrayList<Entity> entityList = new ArrayList<>(); //also holds the powers
 
     /**
-     * Creates a game with level, populates level, and sets up control scheme.
+     * Creates a game with level, populates level, and boots user interface.
      */
     public Handler() {
 
         // Initialization of scanner, level, and hero
         this.level = new Level();
-        this.hero = new Hero(1,1,Utility.generateID(entityList));
+        this.hero = new Hero(1, 1, Utility.generateID(entityList));
         this.spawnEntity(hero);
         this.fogOfWar = true;
 
         // Spawn three monsters
-        this.spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,1,Utility.generateID(entityList)));
-        this.spawnEntity(new Monster(1,Level.CHAMBER_HEIGHT - 1,Utility.generateID(entityList)));
-        this.spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1,Level.CHAMBER_HEIGHT - 1,Utility.generateID(entityList)));
+        this.spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1, 1, Utility.generateID(entityList)));
+        this.spawnEntity(new Monster(1, Level.CHAMBER_HEIGHT - 1, Utility.generateID(entityList)));
+        this.spawnEntity(new Monster(Level.CHAMBER_WIDTH - 1, Level.CHAMBER_HEIGHT - 1, Utility.generateID(entityList)));
 
         // Spawn one power
         this.scatterPower();
@@ -60,7 +60,7 @@ public class Handler {
      */
     private boolean spawnEntity(Entity entity) {
 
-        boolean success = setEntity(entity,entity.getPosition());
+        boolean success = setEntity(entity, entity.getPosition());
         if (success) this.entityList.add(entity);
         return success;
     }
@@ -95,81 +95,84 @@ public class Handler {
             if (entity.getEntityType().equals("hero")) {
                 revealTiles(entity);
 
-                // Trigger overlap resolution
+                // Trigger for overlap resolution
                 if (targetTile.getInhabitants().size() > 1) {
                     resolveOverlap(targetTile);
                 }
-            }
-            else if (fogOfWar) {
+
+            } else if (fogOfWar) {
                 targetTile.setVisible(true);
                 originalTile.setVisible(false);
             }
 
             // Remember path if entity is monster
             if (entity.getEntityType().equals("monster")) {
-                ((Monster)entity).setPreviousLocation(new Coordinates(originalX,originalY));
+                ((Monster) entity).setPreviousLocation(new Coordinates(originalX, originalY));
             }
 
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     /**
      * Moves an entity one unit towards any eight directions.
      * @param entity The entity to be moved.
      * @param direction Any of eight directions defined in the Directions enumerator
+     * @return Message triggered by movement of entity.
      */
     public String moveEntity(Entity entity, Direction direction) {
-            if (
-                !setEntity(entity, Utility.locateDirection(entity.getPosition(),direction))
-                && entity.getEntityType().equals("hero")
-            ) {
-                return "You can't pass through walls!";
-            }
-            return null;
+        if (
+                !setEntity(entity, Utility.locateDirection(entity.getPosition(), direction))
+                        && entity.getEntityType().equals("hero")
+        ) {
+            return "You can't pass through walls!";
+        }
+        return null;
     }
 
-    // Game Logic
+    // Game Mechanics Methods
     /**
      * Determines the result of an entity overlap based on game rules
+     *
      * @param tile The tile where the overlap occurs.
      */
     private void resolveOverlap(Tile tile) {
 
         tile.sortInhabitants();
         ArrayList<Entity> subjects = tile.getInhabitants();
-        Hero hero = ((Hero)subjects.get(0));
+        Hero hero = ((Hero) subjects.get(0));
 
         for (int i = 1; i < subjects.size(); i++) {
-           Entity target = subjects.get(i);
-           if (target.getEntityType().equals("power")) {
-               hero.setPowerCount(hero.getPowerCount() + 1);
-               //noinspection SuspiciousListRemoveInLoop
-               subjects.remove(i);
-               scatterPower(); // Spawn a power somewhere to replace this one
-           }
-           else if (target.getEntityType().equals("monster")) {
-               hero.setPowerCount(hero.getPowerCount() - 1);
-               hero.setKillCount(hero.getKillCount() + 1);
+            Entity target = subjects.get(i);
+            if (target.getEntityType().equals("power")) {
+                hero.setPowerCount(hero.getPowerCount() + 1);
+                //noinspection SuspiciousListRemoveInLoop
+                subjects.remove(i);
+                scatterPower(); // Spawn a power somewhere to replace this one
+            } else if (target.getEntityType().equals("monster")) {
+                hero.setPowerCount(hero.getPowerCount() - 1);
+                hero.setKillCount(hero.getKillCount() + 1);
 
-               // Removes monster from tile and cast into temporary storage
-               Monster targetMonster = ((Monster)subjects.remove(i));
+                // Removes monster from tile and cast into temporary storage
+                Monster targetMonster = ((Monster) subjects.remove(i));
 
-               // Removes this specific monster from entityList based on id
-               // This is so that its presence on handler is gone as well
-               Entity targetEntity = null;
-               for (Entity entity : this.entityList) {
-                   if (entity.getId() == targetMonster.getId()) targetEntity = entity;
-               }
-               this.entityList.remove(targetEntity);
-           }
+                // Removes this specific monster from entityList based on id
+                // This is so that its presence on handler is gone as well
+                Entity targetEntity = null;
+                for (Entity entity : this.entityList) {
+                    if (entity.getId() == targetMonster.getId()) targetEntity = entity;
+                }
+                this.entityList.remove(targetEntity);
+            }
         }
         hero.update();
     }
 
+    /**
+     * Spawn a power in a random location on map.
+     */
     private void scatterPower() {
-        // Spawn powers in random locations, keep trying until POWER_COUNT powers have been successfully spawned
+
         int placementSuccess = 0;
         Random rand = new Random();
         while (placementSuccess < 1) {
@@ -187,14 +190,14 @@ public class Handler {
      * Set eight tiles around an entity to visible.
      * @param entity The entity from which vision is casted.
      */
-    public void revealTiles (Entity entity) {
+    public void revealTiles(Entity entity) {
 
         // Reveal tile that entity is standing on
         this.level.getMap()[entity.getPosition().getY()][entity.getPosition().getX()].setVisible(true);
 
         // Reveal tiles around the entity in eight directions
         for (Direction direction : Direction.values()) {
-            Coordinates targetCoordinates = Utility.locateDirection(entity.getPosition(),direction);
+            Coordinates targetCoordinates = Utility.locateDirection(entity.getPosition(), direction);
             Tile targetTile = this.level.getMap()[targetCoordinates.getY()][targetCoordinates.getX()];
             targetTile.setVisible(true);
         }
@@ -213,7 +216,6 @@ public class Handler {
         fogOfWar = false;
     }
 
-
     /**
      * Enables various overpowered debug features
      */
@@ -227,7 +229,8 @@ public class Handler {
         while (placementSuccess < 20) {
             int randomX = new Random().nextInt((Level.CHAMBER_WIDTH - 2) - 2) + 2;
             int randomY = new Random().nextInt((Level.CHAMBER_HEIGHT - 2) - 2) + 2;
-            if (spawnEntity(new Monster(randomX,randomY,Utility.generateID(entityList)))) placementSuccess ++;
+            if (spawnEntity(new Monster(randomX, randomY, Utility.generateID(entityList))))
+                placementSuccess++;
         }
     }
 

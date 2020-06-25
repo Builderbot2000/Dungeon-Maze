@@ -1,7 +1,7 @@
 package ca.sfu.cmpt213.assignment2.model;
 
 /**
- * Coordinate class which is used to map out coordinates in the game space
+ * Coordinate class which is used to define position on the game map
  */
 public class Coordinates {
 
@@ -21,6 +21,10 @@ public class Coordinates {
         return y;
     }
 
+    /**
+     * Debug method that displays the coordinates current position
+     * @return current position of the coordinate
+     */
     @Override
     public String toString() {
         return "Coordinates{" +

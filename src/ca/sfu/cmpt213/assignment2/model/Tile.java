@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Stores information in regards to what the an individual tile holds (Monster,Hero,empty,wall)
+ * Stores information in regards to what an individual tile holds (Monster,Hero,empty,wall)
+ * Is used to create and later on manage the Level while playing the game.
  */
 
 public class Tile {
@@ -62,11 +63,6 @@ public class Tile {
         return isInhabited;
     }
 
-    public void updateTile() {
-        // Automatically sets isInhabited flag
-        this.isInhabited = this.inhabitants.size() != 0;
-    }
-
     public ArrayList<Entity> getInhabitants() {
         return this.inhabitants;
     }
@@ -80,12 +76,23 @@ public class Tile {
     }
 
     /**
-     * Sort inhabitants based on their overlap resolution priority
+     * Automatically sets isInhabited flag
+     */
+    public void updateTile() {
+        this.isInhabited = this.inhabitants.size() != 0;
+    }
+
+    /**
+     * Sort inhabitants based on their priority, low values go first.
      */
     public void sortInhabitants() {
         Collections.sort(inhabitants);
     }
 
+    /**
+     * Used in Depth First Search algorithm to determine direction of path for casting
+     * @return direction of path that runs through this tile
+     */
     public boolean[] getPathDirection() {
         return pathDirection;
     }
