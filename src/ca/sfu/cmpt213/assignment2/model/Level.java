@@ -1,6 +1,7 @@
 package ca.sfu.cmpt213.assignment2.model;
 
-import ca.sfu.cmpt213.assignment2.Handler;
+import ca.sfu.cmpt213.assignment2.model.enumerators.Direction;
+import ca.sfu.cmpt213.assignment2.model.enumerators.Terrain;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -202,7 +203,7 @@ public class Level {
                     boolean[] neighbourhood = new boolean[]{false,false,false,false}; // validity flags
 
                     for (Direction direction : Direction.cardinals) {
-                        Coordinates targetCoordinates = Handler.locateDirection(tile.getPosition(), direction);
+                        Coordinates targetCoordinates = Utility.locateDirection(tile.getPosition(), direction);
                         Tile neighbour = getTileAtCoordinates(targetCoordinates);
                         if (neighbour.getTerrain().equals(Terrain.WALL)) {
                             neighbourCount++;
@@ -244,9 +245,9 @@ public class Level {
             return true; // Check if tile hits edge wall
         } else {
             for (Direction direction : Direction.cardinals) {
-                Tile targetTile = getTileAtCoordinates(Handler.locateDirection(tile.getPosition(),direction));
+                Tile targetTile = getTileAtCoordinates(Utility.locateDirection(tile.getPosition(),direction));
                 if (!direction.equals(previousDirection) && targetTile.getTerrain().equals(Terrain.WALL)) {
-                    if (probe(targetTile,Direction.opposite(direction))) {
+                    if (probe(targetTile,Utility.opposite(direction))) {
                         tile.setTerrain(Terrain.EMPTY);
                         return false;
                     }

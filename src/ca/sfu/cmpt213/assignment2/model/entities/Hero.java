@@ -7,12 +7,10 @@ package ca.sfu.cmpt213.assignment2.model.entities;
 public class Hero extends Entity{
 
     private int killCount; //number of monsters killed
-    private int powerCount = 0; //number of powers collected
-    public static final String SYMBOL = "@";
-    public static final int PRIORITY = 1;
+    private int powerCount; //number of powers collected
 
     public Hero(int x, int y, int id) {
-        super(x,y,id,SYMBOL,PRIORITY);
+        super(x,y,"@","hero",1,id);
         this.killCount = 0;
         this.powerCount = 0;
     }

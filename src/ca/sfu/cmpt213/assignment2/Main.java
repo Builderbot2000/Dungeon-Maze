@@ -1,16 +1,12 @@
 package ca.sfu.cmpt213.assignment2;
 
-import ca.sfu.cmpt213.assignment2.model.Direction;
-
-import java.util.Scanner;
+import ca.sfu.cmpt213.assignment2.model.Handler;
+import ca.sfu.cmpt213.assignment2.userInterface.UserInterface;
 
 public class Main {
 
     public static void main(String[] args) {
-        Scanner inputScanner = new Scanner(System.in);
-        Handler handler = new Handler(inputScanner);
-        // handler.debug();
-        handler.runGame();
+        Handler handler = new Handler();
+        UserInterface.runGame(handler);
     }
 }
-//added some changes

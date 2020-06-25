@@ -1,6 +1,7 @@
 package ca.sfu.cmpt213.assignment2.model;
 
 import ca.sfu.cmpt213.assignment2.model.entities.Entity;
+import ca.sfu.cmpt213.assignment2.model.enumerators.Terrain;
 
 import java.util.ArrayList;
 import java.util.Collections;

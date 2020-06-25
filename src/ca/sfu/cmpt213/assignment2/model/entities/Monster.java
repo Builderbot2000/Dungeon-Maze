@@ -1,9 +1,9 @@
 package ca.sfu.cmpt213.assignment2.model.entities;
 
-import ca.sfu.cmpt213.assignment2.Handler;
+import ca.sfu.cmpt213.assignment2.model.Utility;
 import ca.sfu.cmpt213.assignment2.model.Coordinates;
-import ca.sfu.cmpt213.assignment2.model.Direction;
-import ca.sfu.cmpt213.assignment2.model.Terrain;
+import ca.sfu.cmpt213.assignment2.model.enumerators.Direction;
+import ca.sfu.cmpt213.assignment2.model.enumerators.Terrain;
 import ca.sfu.cmpt213.assignment2.model.Tile;
 
 import java.util.ArrayList;
@@ -15,12 +15,10 @@ import java.util.Random;
  */
 public class Monster extends Entity {
 
-    public static final String SYMBOL = "!";
-    public static final int PRIORITY = 2;
     private Coordinates previousLocation;
 
     public Monster(int x, int y, int id) {
-        super(x,y,id,SYMBOL,PRIORITY);
+        super(x,y,"!","monster",2,id);
         previousLocation = new Coordinates(0,0);
     }
 
@@ -29,7 +27,7 @@ public class Monster extends Entity {
     public Direction getAIDirection (Tile[][] map) {
         ArrayList<Direction> validDirections = new ArrayList<>();
         for (Direction direction : Direction.cardinals) {
-            Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
+            Coordinates targetCoordinates = Utility.locateDirection(this.getPosition(), direction);
             Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
             if (targetTile.getTerrain().equals(Terrain.EMPTY)) validDirections.add(direction);
         }
@@ -38,7 +36,7 @@ public class Monster extends Entity {
         if (validDirections.size() > 1) {
             while (true) {
                 Direction direction = validDirections.get(new Random().nextInt(validDirections.size()));
-                Coordinates targetCoordinates = Handler.locateDirection(this.getPosition(), direction);
+                Coordinates targetCoordinates = Utility.locateDirection(this.getPosition(), direction);
                 Tile targetTile = map[targetCoordinates.getY()][targetCoordinates.getX()];
 
                 boolean isBackTrack = false;
