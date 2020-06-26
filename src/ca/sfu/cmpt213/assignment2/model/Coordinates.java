@@ -1,5 +1,8 @@
 package ca.sfu.cmpt213.assignment2.model;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Coordinate class which is used to define position on the game map
  */

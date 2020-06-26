@@ -2,6 +2,9 @@ package ca.sfu.cmpt213.assignment2.model.entities;
 
 import ca.sfu.cmpt213.assignment2.model.Coordinates;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Abstract Entity class parent of Hero and Monster, serves as a basis for all entities.
  */

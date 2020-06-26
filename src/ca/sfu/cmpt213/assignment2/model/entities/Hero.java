@@ -1,5 +1,8 @@
 package ca.sfu.cmpt213.assignment2.model.entities;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Hero class that is the player with fields kill count and powerCount.
  * Other fields and methods inherited from Entity
