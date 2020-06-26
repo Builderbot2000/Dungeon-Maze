@@ -99,11 +99,6 @@ public class Handler {
             targetTile.addInhabitant(entity);
             targetTile.updateTile();
 
-            System.out.println("x:"+targetTile.getPosition().getX()+" y:"+targetTile.getPosition().getY());
-            System.out.println("inhabitants size:"+targetTile.getInhabitants().size());
-            System.out.println("type:"+entity.getEntityType());
-            System.out.println("tile: "+targetTile.getInhabitants().size());
-
             // Reveal tiles if entity is hero
             if (entity.getEntityType().equals("hero")) {
                 revealTiles(entity);
