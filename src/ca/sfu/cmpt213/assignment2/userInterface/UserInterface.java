@@ -53,6 +53,7 @@ public class UserInterface {
      * @param handler The current game Handler.
      */
     public static void runGame(Handler handler) {
+        boolean firstRun = true;
         while (true) {
 
             // Lose Condition
@@ -71,10 +72,13 @@ public class UserInterface {
             }
 
             // Move monsters according to directions given by AI
-            for (int i = 1; i < handler.getEntityList().size(); i++) {
-                if (handler.getEntityList().get(i).getSymbol().equals("!")) {
-                    Monster currentMonster = ((Monster) handler.getEntityList().get(i));
-                    handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
+            if (!firstRun) {
+                for (int i = 1; i < handler.getEntityList().size(); i++) {
+                    if (handler.getEntityList().get(i).getSymbol().equals("!")) {
+                        Monster currentMonster = ((Monster) handler.getEntityList().get(i));
+                        handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
+                        System.out.println("RUN!");
+                    }
                 }
             }
 
@@ -131,6 +135,7 @@ public class UserInterface {
                 if (message != null) System.out.println(message);
             }
             handler.revealTiles(handler.getHero());
+            firstRun = false;
         }
     }
 }

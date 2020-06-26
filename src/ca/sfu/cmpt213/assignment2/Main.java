@@ -11,7 +11,7 @@ public class Main {
     /**
      * default false, change to true for more visually pleasing levels
      */
-    public static final boolean BETTER_GRAPHICS = false;
+    public static final boolean BETTER_GRAPHICS = true;
 
     public static void main(String[] args) {
         Handler handler = new Handler();

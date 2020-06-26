@@ -61,7 +61,12 @@ public class Handler {
     private boolean spawnEntity(Entity entity) {
 
         boolean success = setEntity(entity, entity.getPosition());
-        if (success) this.entityList.add(entity);
+        if (success) {
+            this.entityList.add(entity);
+            int x = entity.getPosition().getX();
+            int y = entity.getPosition().getY();
+            this.level.getMap()[y][x].setVisible(true);
+        }
         return success;
     }
 
