@@ -102,13 +102,14 @@ public class Handler {
             // Reveal tiles if entity is hero
             if (entity.getEntityType().equals("hero")) {
                 revealTiles(entity);
+            }
 
-                // Trigger for overlap resolution
-                if (targetTile.getInhabitants().size() > 1) {
-                    resolveOverlap(targetTile);
-                }
+            // Trigger for overlap resolution
+            if (targetTile.getInhabitants().size() > 1) {
+                resolveOverlap(targetTile);
+            }
 
-            } else if (fogOfWar) {
+            if (fogOfWar) {
                 targetTile.setVisible(true);
                 originalTile.setVisible(false);
             }
@@ -147,6 +148,7 @@ public class Handler {
     private void resolveOverlap(Tile tile) {
 
         tile.sortInhabitants();
+        if (!tile.getInhabitants().get(0).getEntityType().equals("hero")) return;
         ArrayList<Entity> subjects = tile.getInhabitants();
         Hero hero = ((Hero) subjects.get(0));
 
