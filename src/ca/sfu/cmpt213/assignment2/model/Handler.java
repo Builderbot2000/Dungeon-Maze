@@ -147,8 +147,8 @@ public class Handler {
      */
     private void resolveOverlap(Tile tile) {
 
-        if (!tile.getInhabitants().get(0).getEntityType().equals("hero")) return;
         tile.sortInhabitants();
+        if (!tile.getInhabitants().get(0).getEntityType().equals("hero")) return;
         ArrayList<Entity> subjects = tile.getInhabitants();
         Hero hero = ((Hero) subjects.get(0));
 
