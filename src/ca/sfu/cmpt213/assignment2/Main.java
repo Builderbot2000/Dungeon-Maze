@@ -17,7 +17,6 @@ public class Main {
     public static final boolean BETTER_GRAPHICS = true;
 
     public static void main(String[] args) {
-        Handler handler = new Handler();
-        UserInterface.runGame(handler);
+        UserInterface.runGame(new Handler());
     }
 }

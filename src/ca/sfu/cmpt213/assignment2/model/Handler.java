@@ -99,16 +99,22 @@ public class Handler {
             targetTile.addInhabitant(entity);
             targetTile.updateTile();
 
+            System.out.println("x:"+targetTile.getPosition().getX()+" y:"+targetTile.getPosition().getY());
+            System.out.println("inhabitants size:"+targetTile.getInhabitants().size());
+            System.out.println("type:"+entity.getEntityType());
+            System.out.println("tile: "+targetTile.getInhabitants().size());
+
             // Reveal tiles if entity is hero
             if (entity.getEntityType().equals("hero")) {
                 revealTiles(entity);
+            }
 
-                // Trigger for overlap resolution
-                if (targetTile.getInhabitants().size() > 1) {
-                    resolveOverlap(targetTile);
-                }
+            // Trigger for overlap resolution
+            if (targetTile.getInhabitants().size() > 1) {
+                resolveOverlap(targetTile);
+            }
 
-            } else if (fogOfWar) {
+            if (fogOfWar) {
                 targetTile.setVisible(true);
                 originalTile.setVisible(false);
             }
@@ -146,6 +152,7 @@ public class Handler {
      */
     private void resolveOverlap(Tile tile) {
 
+        if (!tile.getInhabitants().get(0).getEntityType().equals("hero")) return;
         tile.sortInhabitants();
         ArrayList<Entity> subjects = tile.getInhabitants();
         Hero hero = ((Hero) subjects.get(0));

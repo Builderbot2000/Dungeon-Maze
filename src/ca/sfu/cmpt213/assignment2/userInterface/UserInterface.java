@@ -59,11 +59,22 @@ public class UserInterface {
         boolean firstRun = true;
         while (true) {
 
+            // Move monsters according to directions given by AI
+            if (!firstRun) {
+                for (int i = 1; i < handler.getEntityList().size(); i++) {
+                    if (handler.getEntityList().get(i).getSymbol().equals("!")) {
+                        Monster currentMonster = ((Monster) handler.getEntityList().get(i));
+                        handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
+                    }
+                }
+            }
+
             // Lose Condition
             if (!handler.getHero().isAlive()) {
                 System.out.println("You perished in battle and was eaten by a monster. (or multiple monsters)");
                 handler.getLevel().getTileAtCoordinates(handler.getHero().getPosition()).getInhabitants().get(0).setSymbol("X");
                 handler.revealMap();
+                System.out.println(handler.getLevel().toString());
                 break;
             }
 
@@ -71,18 +82,8 @@ public class UserInterface {
             if (handler.getHero().getKillCount() >= handler.getWinCondition()) {
                 System.out.println("You won! You have conquered the dungeon maze.");
                 handler.revealMap();
+                System.out.println(handler.getLevel().toString());
                 break;
-            }
-
-            // Move monsters according to directions given by AI
-            if (!firstRun) {
-                for (int i = 1; i < handler.getEntityList().size(); i++) {
-                    if (handler.getEntityList().get(i).getSymbol().equals("!")) {
-                        Monster currentMonster = ((Monster) handler.getEntityList().get(i));
-                        handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
-                        System.out.println("RUN!");
-                    }
-                }
             }
 
             // Print level and stats, open console for entry
