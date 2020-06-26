@@ -7,7 +7,7 @@ import ca.sfu.cmpt213.assignment2.userInterface.UserInterface;
 // Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
 
 /**
- * The Main method where in which the game is initialized.
+ * The Main method through which the game is initialized.
  */
 public class Main {
 
