@@ -56,8 +56,10 @@ public class Handler {
     }
 
     // Entity Manipulation Methods
+
     /**
      * Spawns a defined entity based on their position field.
+     *
      * @param entity The entity to be spawned.
      * @return True if spawn is successful and false if spawn failed.
      */
@@ -75,7 +77,8 @@ public class Handler {
 
     /**
      * Sets an entity at a designated location.
-     * @param entity The entity to be set.
+     *
+     * @param entity         The entity to be set.
      * @param newCoordinates Where the entity should be set on the level map.
      * @return True if set is successful and false if set failed.
      */
@@ -124,7 +127,8 @@ public class Handler {
 
     /**
      * Moves an entity one unit towards any eight directions.
-     * @param entity The entity to be moved.
+     *
+     * @param entity    The entity to be moved.
      * @param direction Any of eight directions defined in the Directions enumerator
      * @return Message triggered by movement of entity.
      */
@@ -139,6 +143,7 @@ public class Handler {
     }
 
     // Game Mechanics Methods
+
     /**
      * Determines the result of an entity overlap based on game rules
      *
@@ -196,6 +201,7 @@ public class Handler {
 
     /**
      * Set eight tiles around an entity to visible.
+     *
      * @param entity The entity from which vision is casted.
      */
     public void revealTiles(Entity entity) {
@@ -212,6 +218,7 @@ public class Handler {
     }
 
     // Debug Methods
+
     /**
      * Permanently reveals all tiles of level
      */

@@ -126,6 +126,11 @@ public class UserInterface {
                         handler.setWinCondition(1);
                         pass = false;
                     }
+                    case "Q" -> {
+                        System.out.println("Thank you for playing the game ");
+                        return;
+
+                    }
                     case "`" -> {
                         handler.debug();
                         pass = false;

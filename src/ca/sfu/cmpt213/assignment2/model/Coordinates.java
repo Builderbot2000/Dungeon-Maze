@@ -8,20 +8,20 @@ package ca.sfu.cmpt213.assignment2.model;
  */
 public class Coordinates {
 
-    private final int X, Y;
+    private final int x, y;
 
     public Coordinates(int x, int y) {
-        this.X = x;
-        this.Y = y;
+        this.x = x;
+        this.y = y;
     }
 
     // Getters
     public int getX() {
-        return X;
+        return x;
     }
 
     public int getY() {
-        return Y;
+        return y;
     }
 
     /**
@@ -31,8 +31,8 @@ public class Coordinates {
     @Override
     public String toString() {
         return "Coordinates{" +
-                "x=" + X +
-                ", y=" + Y +
+                "x=" + x +
+                ", y=" + y +
                 '}';
     }
 }
