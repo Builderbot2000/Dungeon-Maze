@@ -11,6 +11,9 @@ import ca.sfu.cmpt213.assignment2.userInterface.UserInterface;
 import java.util.ArrayList;
 import java.util.Random;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Sets up text menu and gameplay environment.
  * Manages user inputs and handles them accordingly.

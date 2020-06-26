@@ -6,6 +6,9 @@ import ca.sfu.cmpt213.assignment2.model.enumerators.Terrain;
 import java.util.ArrayList;
 import java.util.Collections;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Stores information in regards to what an individual tile holds (Monster,Hero,empty,wall)
  * Is used to create and later on manage the Level while playing the game.

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * The game map where all gameplay will take place.
  * Uses Depth First Search (DFS) algorithm and Backtracking to fill the level with a maze.

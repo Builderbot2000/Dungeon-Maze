@@ -7,6 +7,9 @@ import ca.sfu.cmpt213.assignment2.model.entities.Monster;
 
 import java.util.Scanner;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Initializes the UI and manages user input in relation to the game
  * and the various mechanics of the Objects that it uses.
