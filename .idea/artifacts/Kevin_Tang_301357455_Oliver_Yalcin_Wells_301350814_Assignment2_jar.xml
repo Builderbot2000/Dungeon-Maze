@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Kevin_Tang_301357455_Oliver_Yalcin_Wells_301350814_Assignment2:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Kevin_Tang_301357455_Oliver_Yalcin_Wells_301350814_Assignment2_jar</output-path>
-    <root id="archive" name="Kevin_Tang_301357455_Oliver_Yalcin_Wells_301350814_Assignment2.jar">
-      <element id="module-output" name="Kevin_Tang_301357455_Oliver_Yalcin_Wells_301350814_Assignment2" />
-    </root>
-  </artifact>
-</component>
