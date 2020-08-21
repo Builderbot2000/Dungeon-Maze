@@ -2,14 +2,16 @@ package ca.sfu.cmpt213.assignment2.model.entities;
 
 import ca.sfu.cmpt213.assignment2.model.Coordinates;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
- * Abstract Entity class parent of Hero and Monster.
- * This class used as a basis for these classes to be implemented as they share common functionality
+ * Abstract Entity class parent of Hero and Monster, serves as a basis for all entities.
  */
 public abstract class Entity implements Comparable<Entity> {
 
     private boolean isAlive;
-    private Coordinates position;
+    private Coordinates position; // Entity's position on level map
     private String symbol; // Placeholder symbol
     private final String entityType; // Type that defines what this entity is
     private final int priority; // The lower the number, the earlier it gets resolved

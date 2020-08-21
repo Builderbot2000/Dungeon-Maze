@@ -7,8 +7,12 @@ import ca.sfu.cmpt213.assignment2.model.entities.Monster;
 
 import java.util.Scanner;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
- * Initializes the UI and manages user input in relation to the game and the various mechanics of the Objects that it uses
+ * Initializes the UI and manages user input in relation to the game
+ * and the various mechanics of the Objects that it uses.
  */
 public class UserInterface {
 
@@ -35,6 +39,7 @@ public class UserInterface {
 
     /**
      * Prints various in-game statistics.
+     * @param handler The current game Handler.
      */
     public static void printStats(Handler handler) {
         System.out.println("Total number of monsters that needs to be killed: " + handler.getWinCondition());
@@ -47,16 +52,29 @@ public class UserInterface {
     }
 
     /**
-     * Main game display loop.
+     * Main game input and display loop.
+     * @param handler The current game Handler.
      */
     public static void runGame(Handler handler) {
+        boolean firstRun = true;
         while (true) {
+
+            // Move monsters according to directions given by AI
+            if (!firstRun) {
+                for (int i = 1; i < handler.getEntityList().size(); i++) {
+                    if (handler.getEntityList().get(i).getSymbol().equals("!")) {
+                        Monster currentMonster = ((Monster) handler.getEntityList().get(i));
+                        handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
+                    }
+                }
+            }
 
             // Lose Condition
             if (!handler.getHero().isAlive()) {
                 System.out.println("You perished in battle and was eaten by a monster. (or multiple monsters)");
                 handler.getLevel().getTileAtCoordinates(handler.getHero().getPosition()).getInhabitants().get(0).setSymbol("X");
                 handler.revealMap();
+                System.out.println(handler.getLevel().toString());
                 break;
             }
 
@@ -64,15 +82,8 @@ public class UserInterface {
             if (handler.getHero().getKillCount() >= handler.getWinCondition()) {
                 System.out.println("You won! You have conquered the dungeon maze.");
                 handler.revealMap();
+                System.out.println(handler.getLevel().toString());
                 break;
-            }
-
-            // Move monsters according to directions given by AI
-            for (int i = 1; i < handler.getEntityList().size(); i++) {
-                if (handler.getEntityList().get(i).getSymbol().equals("!")) {
-                    Monster currentMonster = ((Monster) handler.getEntityList().get(i));
-                    handler.moveEntity(currentMonster, currentMonster.getAIDirection(handler.getLevel().getMap().clone()));
-                }
             }
 
             // Print level and stats, open console for entry
@@ -128,6 +139,7 @@ public class UserInterface {
                 if (message != null) System.out.println(message);
             }
             handler.revealTiles(handler.getHero());
+            firstRun = false;
         }
     }
 }

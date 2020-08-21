@@ -11,11 +11,13 @@ import ca.sfu.cmpt213.assignment2.userInterface.UserInterface;
 import java.util.ArrayList;
 import java.util.Random;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Sets up text menu and gameplay environment.
  * Manages user inputs and handles them accordingly.
  */
-
 public class Handler {
 
     private final Level level;
@@ -25,12 +27,13 @@ public class Handler {
     private boolean fogOfWar;
 
     /**
+     * A record of all entities on map so that they can be accurately manipulated by Handler.
      * The entityList hosts the hero at index 0 and the three monsters at index 1,2,3 respectively.
      */
     ArrayList<Entity> entityList = new ArrayList<>(); //also holds the powers
 
     /**
-     * Creates a game with level, populates level, and sets up control scheme.
+     * Creates a game with level, populates level, and boots user interface.
      */
     public Handler() {
 
@@ -53,24 +56,26 @@ public class Handler {
     }
 
     // Entity Manipulation Methods
-
     /**
      * Spawns a defined entity based on their position field.
-     *
      * @param entity The entity to be spawned.
      * @return True if spawn is successful and false if spawn failed.
      */
     private boolean spawnEntity(Entity entity) {
 
         boolean success = setEntity(entity, entity.getPosition());
-        if (success) this.entityList.add(entity);
+        if (success) {
+            this.entityList.add(entity);
+            int x = entity.getPosition().getX();
+            int y = entity.getPosition().getY();
+            this.level.getMap()[y][x].setVisible(true);
+        }
         return success;
     }
 
     /**
      * Sets an entity at a designated location.
-     *
-     * @param entity         The entity to be set.
+     * @param entity The entity to be set.
      * @param newCoordinates Where the entity should be set on the level map.
      * @return True if set is successful and false if set failed.
      */
@@ -97,12 +102,14 @@ public class Handler {
             // Reveal tiles if entity is hero
             if (entity.getEntityType().equals("hero")) {
                 revealTiles(entity);
+            }
 
-                // Trigger overlap resolution
-                if (targetTile.getInhabitants().size() > 1) {
-                    resolveOverlap(targetTile);
-                }
-            } else if (fogOfWar) {
+            // Trigger for overlap resolution
+            if (targetTile.getInhabitants().size() > 1) {
+                resolveOverlap(targetTile);
+            }
+
+            if (fogOfWar) {
                 targetTile.setVisible(true);
                 originalTile.setVisible(false);
             }
@@ -118,9 +125,9 @@ public class Handler {
 
     /**
      * Moves an entity one unit towards any eight directions.
-     *
-     * @param entity    The entity to be moved.
+     * @param entity The entity to be moved.
      * @param direction Any of eight directions defined in the Directions enumerator
+     * @return Message triggered by movement of entity.
      */
     public String moveEntity(Entity entity, Direction direction) {
         if (
@@ -132,8 +139,7 @@ public class Handler {
         return null;
     }
 
-    // Game Logic
-
+    // Game Mechanics Methods
     /**
      * Determines the result of an entity overlap based on game rules
      *
@@ -142,6 +148,7 @@ public class Handler {
     private void resolveOverlap(Tile tile) {
 
         tile.sortInhabitants();
+        if (!tile.getInhabitants().get(0).getEntityType().equals("hero")) return;
         ArrayList<Entity> subjects = tile.getInhabitants();
         Hero hero = ((Hero) subjects.get(0));
 
@@ -171,8 +178,11 @@ public class Handler {
         hero.update();
     }
 
+    /**
+     * Spawn a power in a random location on map.
+     */
     private void scatterPower() {
-        // Spawn powers in random locations, keep trying until POWER_COUNT powers have been successfully spawned
+
         int placementSuccess = 0;
         Random rand = new Random();
         while (placementSuccess < 1) {
@@ -188,7 +198,6 @@ public class Handler {
 
     /**
      * Set eight tiles around an entity to visible.
-     *
      * @param entity The entity from which vision is casted.
      */
     public void revealTiles(Entity entity) {
@@ -205,7 +214,6 @@ public class Handler {
     }
 
     // Debug Methods
-
     /**
      * Permanently reveals all tiles of level
      */
@@ -217,7 +225,6 @@ public class Handler {
         }
         fogOfWar = false;
     }
-
 
     /**
      * Enables various overpowered debug features

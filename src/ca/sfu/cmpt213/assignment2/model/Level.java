@@ -1,5 +1,6 @@
 package ca.sfu.cmpt213.assignment2.model;
 
+import ca.sfu.cmpt213.assignment2.Main;
 import ca.sfu.cmpt213.assignment2.model.enumerators.Direction;
 import ca.sfu.cmpt213.assignment2.model.enumerators.Terrain;
 
@@ -7,20 +8,25 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
- * Creates the map where in which gameplay will take place. Uses DFS and Backtracking to achieve the creation of the Level.
+ * The game map where all gameplay will take place.
+ * Uses Depth First Search (DFS) algorithm and Backtracking to fill the level with a maze.
  */
 public class Level {
 
+    // Pre-defined map properties
     public static final int
             MAP_WIDTH = 20, MAP_HEIGHT = 15,
             CHAMBER_WIDTH = MAP_WIDTH - 1, CHAMBER_HEIGHT = MAP_HEIGHT - 1,
             CAST_WIDTH = (int) Math.ceil(CHAMBER_WIDTH / 2.0), CAST_HEIGHT = (int) Math.ceil(CHAMBER_HEIGHT / 2.0);
 
     private final Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
+    private final Tile[][] tempMap = new Tile[CAST_HEIGHT][CAST_WIDTH];
     private int numberOfCellsVisited;
     private final Stack<Tile> mapStack = new Stack<>();
-    private final Tile[][] tempMap = new Tile[CAST_HEIGHT][CAST_WIDTH];
 
     public Level() {
 
@@ -39,7 +45,12 @@ public class Level {
         createChamber();
     }
 
-    //DFS algorithm with backtracking. Using scaling idea with a temporary map in order to later scale up.
+    /**
+     * DFS algorithm with backtracking.
+     * Uses scale casting with a 1/4 sized temporary map in order to cast
+     * a maze of zero-thickness walls into a maze of one-thickness walls.
+     * @param currentTile the current tile that the algorithm is processing.
+     */
     private void createMaze(Tile currentTile) {
 
         while (numberOfCellsVisited < CAST_WIDTH * CAST_HEIGHT) {
@@ -116,8 +127,8 @@ public class Level {
         castMaze(tempMap[0][0], -1);
     }
 
-    /*
-     * Initializes Recursively actual map with tempMap which by scaling upwards and using the mathematical ideas from:
+    /**
+     * Initializes recursively actual map with tempMap which by scaling upwards and using the mathematics from:
      * https://gamedev.stackexchange.com/questions/142524/how-do-you-create-a-perfect-maze-with-walls-that-are-as-thick-as-the-other-tiles
      */
     void castMaze(Tile currentMap, int prevDirection) {
@@ -144,7 +155,8 @@ public class Level {
     }
 
     /**
-     * Creates an empty chamber with walls on all four edges.
+     * Starts a chamber filled with walls and initializes DFS.
+     * Also does modifications on chamber after maze is created.
      */
     private void createChamber() {
 
@@ -222,11 +234,11 @@ public class Level {
             }
         }
 
-        // Check for enclosed spaces
-        for (int i = 1; i < MAP_HEIGHT - 2; i++)
-            probe(map[i][MAP_WIDTH - 2], Direction.EAST);
+        // Check for enclosed spaces and create openings
+        for (int i = 1; i < MAP_HEIGHT - 2; i++) probe(map[i][MAP_WIDTH - 2], Direction.EAST);
     }
 
+    // Getters
     public Tile[][] getMap() {
         return map;
     }
@@ -235,6 +247,13 @@ public class Level {
         return this.map[coordinates.getY()][coordinates.getX()];
     }
 
+    /**
+     * Probes a branch of walls from edge to see if it connects to another edge.
+     * Used to determine if the branch causes an enclosed space.
+     * @param tile Current tile that the probe is processing.
+     * @param previousDirection Previous tile visited by probe.
+     * @return True if probe hits another edge wall, false if probe ends in empty space.
+     */
     private boolean probe(Tile tile, Direction previousDirection) {
         int currentX = tile.getPosition().getX();
         int currentY = tile.getPosition().getY();
@@ -257,7 +276,11 @@ public class Level {
         }
     }
 
-    //1 character is worth 2 spaces
+    /**
+     * Generates a String representation of the level's map.
+     * (one character occupies two spaces when BETTER_GRAPHICS is enabled)
+     * @return the String representation of the level's map.
+     */
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
@@ -279,7 +302,7 @@ public class Level {
                 } else {
                     line.append(".");
                 }
-                line.append(" "); //uncomment this if you want to go back to the old format. (Easier to reconfigure with this configuration)
+                if (Main.BETTER_GRAPHICS) line.append(" ");
             }
             line.append(" ");
             line.append("\n");

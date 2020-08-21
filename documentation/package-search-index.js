@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ca.sfu.cmpt213.assignment2"},{"l":"ca.sfu.cmpt213.assignment2.model"},{"l":"ca.sfu.cmpt213.assignment2.model.entities"},{"l":"ca.sfu.cmpt213.assignment2.model.enumerators"},{"l":"ca.sfu.cmpt213.assignment2.userInterface"}]

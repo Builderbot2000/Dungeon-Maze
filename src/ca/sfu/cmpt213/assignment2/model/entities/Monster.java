@@ -9,6 +9,9 @@ import ca.sfu.cmpt213.assignment2.model.Tile;
 import java.util.ArrayList;
 import java.util.Random;
 
+// Kevin Tang (301357455 | kta76@sfu.ca)
+// Oliver Yalcın Wells (301350814 | oliveryalcin@hotmail.co.uk)
+
 /**
  * Monster class which inherits its fields from Entity.
  * Manages monster objects movement patterns.
@@ -24,7 +27,15 @@ public class Monster extends Entity {
 
     public void setPreviousLocation(Coordinates location) { previousLocation = location; }
 
+    /**
+     * Drives monster so that it goes to a random direction that isn't its previous direction.
+     * It will only backtrack if there is no other way to go.
+     * @param map the map of the level.
+     * @return an appropriate direction for the monster to go.
+     */
     public Direction getAIDirection (Tile[][] map) {
+
+        // Determine valid directions
         ArrayList<Direction> validDirections = new ArrayList<>();
         for (Direction direction : Direction.cardinals) {
             Coordinates targetCoordinates = Utility.locateDirection(this.getPosition(), direction);
