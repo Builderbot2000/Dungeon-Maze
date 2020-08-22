@@ -1,5 +1,5 @@
 # Dungeon-Maze
-A command console game where you play as a hero exploring a labyrinth crawling with monsters 
+A command-line game where you play as a hero exploring a labyrinth crawling with monsters 
 
 Created for assignment 2 in the CMPT 213 course of the SFU Computing Program, this program can be tested in the Intellij IDE.
 
